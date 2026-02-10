@@ -136,6 +136,12 @@ python -m venv venv
 ```
 venv\Scripts\activate
 ```
+```
+uvicorn main:app --reload --host 0.0.0.0 --port 8010
+```
+```
+pip install fastapi uvicorn mysql-connector-python
+```
 ### Linux / macOS
 ```
 python3 -m venv venv
