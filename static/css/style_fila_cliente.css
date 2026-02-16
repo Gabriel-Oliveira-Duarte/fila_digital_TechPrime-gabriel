@@ -301,4 +301,14 @@ body{
   pointer-events:none;
   transition:.2s ease;
 }
-.toast.show{opacity:1}
+.actions{
+  position: relative;
+  z-index: 10;
+}
+
+#btnSair{
+  position: relative;
+  z-index: 9999;
+  touch-action: manipulation;
+}
+

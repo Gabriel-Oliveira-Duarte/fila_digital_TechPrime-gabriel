@@ -1045,3 +1045,116 @@ select.selectInput{
 .modal.no-close .modalClose{
   display: none !important;
 }
+/* ===== HOTFIX MOBILE: garantir botões visíveis ===== */
+@media (max-width: 600px) {
+  /* botão do login */
+  #btnClient,
+  .btn,
+  .successBtn {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+
+    width: 100% !important;
+    min-height: 48px !important;
+
+    background: #ff7300 !important; /* laranja */
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 14px !important;
+    font-weight: 700 !important;
+  }
+
+  /* se alguma camada estiver cobrindo */
+  .modal, #modalCard, .wrap {
+    position: relative !important;
+    z-index: 10 !important;
+  }
+
+  .overlay {
+    z-index: 9999 !important;
+  }
+
+  .successActions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}
+
+/* garante cor mesmo sem hover (no mobile não existe hover) */
+#btnClient:hover,
+.successBtn:hover {
+  background: #ff7300 !important;
+}
+/* =========================
+   FIX iOS/Safari: botões invisíveis
+   ========================= */
+
+/* 1) Botão "Entrar na fila" (login) */
+body #modalCard button#btnClient.btn{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+  min-height: 52px !important;
+  padding: 14px 16px !important;
+
+  background: #ff7300 !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important; /* iOS */
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: .2px !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* 2) Botão "Acompanhar fila" (overlay) */
+body .overlay .successActions button.successBtn{
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+  min-height: 52px !important;
+  padding: 14px 16px !important;
+
+  background: #ff7300 !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important; /* iOS */
+  font-size: 16px !important;
+  font-weight: 800 !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* 3) Garante que a área dos botões exista (caso esteja escondida) */
+body .overlay .successActions{
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+/* 4) iOS: remove aparência padrão que às vezes “apaga” o texto */
+button, input{
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+/* 5) iOS: melhora clique (evita “não clicável”) */
+button{
+  touch-action: manipulation !important;
+}

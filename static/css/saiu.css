@@ -1,0 +1,101 @@
+/* ===== Reset básico ===== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Inter", Segoe UI, Roboto, Arial, sans-serif;
+  color: #fff;
+  background: #070707;
+  overflow-x: hidden;
+}
+
+/* ===== Fundo (responsivo no iPhone) ===== */
+.bg{
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(900px 600px at 20% 30%, rgba(255, 122, 0, .14), transparent 60%),
+    radial-gradient(900px 600px at 80% 70%, rgba(255, 122, 0, .10), transparent 55%),
+    radial-gradient(1200px 800px at 50% 50%, rgba(0,0,0,.15), rgba(0,0,0,.85));
+  filter: blur(0px);
+  z-index: 0;
+}
+
+/* Safe-area (iPhone notch) */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ===== Layout ===== */
+.wrap{
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh; /* melhor no mobile */
+  display: grid;
+  place-items: center;
+  padding: 28px 16px;
+}
+
+.card{
+  width: min(520px, 92vw);
+  background: rgba(22, 22, 22, .82);
+  border: 1px solid rgba(255, 122, 0, .35);
+  border-radius: 18px;
+  box-shadow: 0 22px 55px rgba(0,0,0,.55);
+  padding: 26px 22px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+/* ===== Marca ===== */
+.brand{
+  font-weight: 900;
+  letter-spacing: .5px;
+  font-size: clamp(28px, 6vw, 44px);
+  margin-bottom: 8px;
+}
+.brand .b1{ color: #ff7a00; }
+.brand .b2{ color: #bdbdbd; margin-left: 2px; }
+
+.title{
+  margin: 10px 0 10px 0;
+  font-size: clamp(22px, 4.8vw, 34px);
+  font-weight: 800;
+}
+
+.sub{
+  margin: 0 auto 14px auto;
+  max-width: 42ch;
+  opacity: .9;
+  line-height: 1.35;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+
+.tip{
+  margin: 12px auto 6px auto;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+  text-align: left;
+  max-width: 46ch;
+  line-height: 1.35;
+  font-size: clamp(14px, 3.5vw, 16px);
+}
+.tip strong{ color: #ff7a00; }
+
+.small{
+  margin: 14px 0 0 0;
+  opacity: .65;
+  font-size: 13px;
+}
+
+.foot{
+  margin-top: 18px;
+  opacity: .65;
+  font-size: 13px;
+  letter-spacing: .3px;
+}

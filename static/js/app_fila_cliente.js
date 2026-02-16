@@ -1,5 +1,7 @@
-const API_BASE = "http://192.168.205.226:8000";
+// ================= CONFIG =================
+const API_BASE = window.location.origin;
 
+// ================= HELPERS =================
 function fmt2(n){ return String(n).padStart(2,"0"); }
 function horaAgora(){
   const d = new Date();
@@ -9,6 +11,7 @@ function pad3(n){ return String(n).padStart(3,"0"); }
 
 function showToast(msg){
   const toast = document.getElementById("toast");
+  if (!toast) return;
   toast.textContent = msg;
   toast.classList.add("show");
   setTimeout(()=>toast.classList.remove("show"), 1400);
@@ -18,7 +21,14 @@ function getFilaId(){
   return new URLSearchParams(location.search).get("filaId");
 }
 
-// ===== ELEMENTOS =====
+function getClienteNome(filaId){
+  let nome = localStorage.getItem("CLIENTE_NOME");
+  if (!nome && filaId) nome = localStorage.getItem(`cliente_nome_${filaId}`);
+  if (nome && filaId) localStorage.setItem(`cliente_nome_${filaId}`, nome);
+  return (nome || "").trim();
+}
+
+// ================= ELEMENTOS =================
 const elPos = document.getElementById("posicao");
 const elFrente = document.getElementById("aFrente");
 const elTempoMedio = document.getElementById("tempoMedio");
@@ -36,36 +46,33 @@ const btnGeo = document.getElementById("btnGeo");
 const btnAtualizar = document.getElementById("btnAtualizar");
 const btnSair = document.getElementById("btnSair");
 
-// ===== Estado =====
+// ================= Estado =================
 const filaId = getFilaId();
 if (!filaId){
-  alert("Link inválido: falta filaId");
+  alert("Link inválido: falta filaId. Acesse pela leitura do QR Code.");
+  window.location.replace(`${window.location.origin}/templates/saiu.html`);
+  throw new Error("Sem filaId");
 }
 
 const SESSION_KEY = `cliente_session_${filaId}`;
 let clienteId = Number(localStorage.getItem(SESSION_KEY) || 0);
 
-// ===== Render =====
+// ================= Render =================
 function renderStatus(payload){
-  // payload: {fila_nome, cliente:{...}, a_frente, tempo_medio_min, estimativa_min}
   const aFrente = payload.a_frente ?? 0;
   const tempoMedioMin = payload.tempo_medio_min ?? 15;
-
-  // Se estiver aguardando, posição = a_frente + 1. Se atendendo, mostra como #001 (ou mantém)
   const pos = (payload.cliente?.status === "aguardando") ? (aFrente + 1) : 1;
 
-  elPos.textContent = `#${pad3(pos)}`;
-  elFrente.textContent = `${aFrente} pessoas à frente`;
+  if (elPos) elPos.textContent = `#${pad3(pos)}`;
+  if (elFrente) elFrente.textContent = `${aFrente} pessoas à frente`;
 
-  elTempoMedio.textContent = `${tempoMedioMin} min`;
-  elEstimativa.textContent = `~${payload.estimativa_min ?? (aFrente * tempoMedioMin)} min`;
+  if (elTempoMedio) elTempoMedio.textContent = `${tempoMedioMin} min`;
+  if (elEstimativa) elEstimativa.textContent = `~${payload.estimativa_min ?? (aFrente * tempoMedioMin)} min`;
 
-  elFilaNome.textContent = payload.fila_nome || "Fila";
-  elUlt.textContent = horaAgora();
+  if (elFilaNome) elFilaNome.textContent = payload.fila_nome || "Fila";
+  if (elUlt) elUlt.textContent = horaAgora();
 
-  // raio (se você quiser mostrar o raio real do banco, precisamos colocar no endpoint)
-  // por enquanto mantemos o que já existe no layout:
-  // elFilaRaio.textContent = "500m";
+  if (payload.fila_raio_m && elFilaRaio) elFilaRaio.textContent = `${payload.fila_raio_m}m`;
 }
 
 async function atualizarStatus(){
@@ -77,11 +84,6 @@ async function atualizarStatus(){
     return;
   }
   const data = await res.json();
-
-  // mostra raio se vier (se você adicionar no endpoint)
-  // ex: data.fila_raio_m
-  if (data.fila_raio_m) elFilaRaio.textContent = `${data.fila_raio_m}m`;
-
   renderStatus(data);
   showToast("Atualizado!");
 }
@@ -89,15 +91,22 @@ async function atualizarStatus(){
 async function entrarNaFila(){
   if (!filaId) return;
 
-  // se já tem sessão salva, só atualiza
+  // se já tem sessão, só atualiza
   if (clienteId){
     await atualizarStatus();
     return;
   }
 
-  // pede nome (sem mexer no design)
-  let nome = prompt("Digite seu nome para entrar na fila:");
-  if (!nome) nome = "Cliente";
+  const nome = getClienteNome(filaId);
+
+  // se não tiver nome, volta pro login (sem prompt)
+  if (!nome){
+    const url = new URL("/templates/login.html", window.location.origin);
+    url.searchParams.set("next", "Fila_cliente.html");
+    url.searchParams.set("filaId", String(filaId));
+    window.location.replace(url.toString());
+    return;
+  }
 
   const res = await fetch(`${API_BASE}/api/filas/${filaId}/entrar`, {
     method: "POST",
@@ -111,20 +120,18 @@ async function entrarNaFila(){
     return;
   }
 
-  const data = await res.json(); // {cliente_id, senha_num, senha_codigo, pessoas_a_frente}
+  const data = await res.json();
 
-  clienteId = Number(data.cliente_id);
-  localStorage.setItem(SESSION_KEY, String(clienteId));
+  clienteId = Number(data.cliente_id || 0);
+  if (clienteId) localStorage.setItem(SESSION_KEY, String(clienteId));
 
-  // Mostra uma mensagem com a senha (sem mudar o layout)
-  showToast(`Sua senha: ${data.senha_codigo}`);
-
-  // Agora busca status completo e renderiza
+  showToast(`Sua senha: ${data.senha_codigo || "OK"}`);
   await atualizarStatus();
 }
 
-// ===== GEO (mantive igual seu mock) =====
+// ================= GEO (mantido) =================
 function setRaioStatus(ok){
+  if (!elPillRaio) return;
   elPillRaio.classList.toggle("ok", ok);
   elPillRaio.classList.toggle("bad", !ok);
   elPillRaio.innerHTML = ok
@@ -134,19 +141,23 @@ function setRaioStatus(ok){
 
 async function atualizarLocalizacao(){
   if (!navigator.geolocation){
-    elCoordsStatus.textContent = "Indisponível";
-    elCoordsStatus.classList.add("danger");
+    if (elCoordsStatus){
+      elCoordsStatus.textContent = "Indisponível";
+      elCoordsStatus.classList.add("danger");
+    }
     showToast("Geolocalização indisponível.");
     return;
   }
 
   navigator.geolocation.getCurrentPosition(
     () => {
-      elCoordsStatus.textContent = "Ativa";
-      elCoordsStatus.classList.remove("danger");
+      if (elCoordsStatus){
+        elCoordsStatus.textContent = "Ativa";
+        elCoordsStatus.classList.remove("danger");
+      }
 
       const km = (Math.random() * 0.8).toFixed(1);
-      elDist.textContent = `${km} km`;
+      if (elDist) elDist.textContent = `${km} km`;
 
       const dentro = Number(km) <= 0.5;
       setRaioStatus(dentro);
@@ -154,8 +165,10 @@ async function atualizarLocalizacao(){
       showToast("Localização atualizada!");
     },
     () => {
-      elCoordsStatus.textContent = "Permissão negada";
-      elCoordsStatus.classList.add("danger");
+      if (elCoordsStatus){
+        elCoordsStatus.textContent = "Permissão negada";
+        elCoordsStatus.classList.add("danger");
+      }
       setRaioStatus(true);
       showToast("Permissão de localização negada.");
     },
@@ -163,27 +176,81 @@ async function atualizarLocalizacao(){
   );
 }
 
-// ===== Botões =====
-btnGeo?.addEventListener("click", atualizarLocalizacao);
-btnAtualizar?.addEventListener("click", atualizarStatus);
+// ================= SAIR (ULTRA ROBUSTO PARA CELULAR) =================
+function sairDaFila(evt){
+  if (evt){
+    evt.preventDefault();
+    evt.stopPropagation();
+    if (typeof evt.stopImmediatePropagation === "function") evt.stopImmediatePropagation();
+  }
 
-btnSair?.addEventListener("click", async () => {
   const ok = confirm("Tem certeza que deseja sair da fila?");
   if (!ok) return;
 
-  if (filaId && clienteId){
-    // precisa do endpoint /sair (patch abaixo)
-    await fetch(`${API_BASE}/api/filas/${filaId}/cliente/${clienteId}/sair`, { method: "POST" })
-      .catch(() => {});
+  const target = `${window.location.origin}/templates/saiu.html`;
+
+  // limpa sessão e nome ANTES
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem("CLIENTE_NOME");
+    localStorage.removeItem(`cliente_nome_${filaId}`);
+  } catch {}
+
+  // avisa backend sem travar a navegação
+  try {
+    if (filaId && clienteId) {
+      const url = `${API_BASE}/api/filas/${filaId}/cliente/${clienteId}/sair`;
+      const blob = new Blob([JSON.stringify({})], { type: "application/json" });
+      navigator.sendBeacon?.(url, blob);
+    }
+  } catch {}
+
+  // ✅ usa replace pra não voltar pra fila
+  window.location.replace(target);
+
+  // ✅ fallback extra (alguns navegadores ignoram o primeiro)
+  setTimeout(() => window.location.replace(target), 200);
+}
+
+// ================= LISTENERS =================
+btnGeo?.addEventListener("click", atualizarLocalizacao);
+btnAtualizar?.addEventListener("click", atualizarStatus);
+
+function sairDaFila(evt){
+  if (evt){
+    evt.preventDefault();
+    evt.stopPropagation();
+    if (evt.stopImmediatePropagation) evt.stopImmediatePropagation();
   }
 
-  localStorage.removeItem(SESSION_KEY);
-  showToast("Você saiu da fila.");
-  setTimeout(() => window.location.href = "index.html", 600);
-});
+  const ok = confirm("Tem certeza que deseja sair da fila?");
+  if (!ok) return;
 
-// Init
-entrarNaFila().catch(err => {
-  console.error(err);
-  showToast("Erro ao entrar");
-});
+  // ✅ URL absoluta e fixa
+  const target = `${window.location.origin}/templates/saiu.html`;
+
+  // limpa sessão e nome
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem("CLIENTE_NOME");
+    localStorage.removeItem(`cliente_nome_${filaId}`);
+  } catch {}
+
+  // avisa backend sem travar
+  try {
+    if (filaId && clienteId) {
+      const url = `${API_BASE}/api/filas/${filaId}/cliente/${clienteId}/sair`;
+      const blob = new Blob([JSON.stringify({})], { type: "application/json" });
+      navigator.sendBeacon?.(url, blob);
+    }
+  } catch {}
+
+  // ✅ replace pra não voltar com “voltar”
+  window.location.replace(target);
+
+  // fallback
+  setTimeout(() => window.location.replace(target), 250);
+}
+
+btnSair?.addEventListener("touchend", sairDaFila, { capture: true });
+btnSair?.addEventListener("click", sairDaFila, { capture: true });

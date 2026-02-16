@@ -1,25 +1,29 @@
-// ===== Sidebar mobile (somente nesta página) =====
+// ================= SIDEBAR MOBILE =================
 const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
 const menuBtn = document.getElementById("menuBtn");
 
-function openSidebar(){
-  if (!sidebar || !backdrop) return;
-  sidebar.classList.add("open");
-  backdrop.classList.add("show");
+function openSidebar() {
+  sidebar?.classList.add("open");
+  backdrop?.classList.add("show");
 }
-function closeSidebar(){
-  if (!sidebar || !backdrop) return;
-  sidebar.classList.remove("open");
-  backdrop.classList.remove("show");
+function closeSidebar() {
+  sidebar?.classList.remove("open");
+  backdrop?.classList.remove("show");
 }
-if (menuBtn) menuBtn.addEventListener("click", openSidebar);
-if (backdrop) backdrop.addEventListener("click", closeSidebar);
+menuBtn?.addEventListener("click", openSidebar);
+backdrop?.addEventListener("click", closeSidebar);
 
-// ===== API =====
-const API_BASE = "http://192.168.205.226:8000";
+// ================= BASES =================
+// API e FRONT no mesmo FastAPI
+const ORIGIN = window.location.origin;
+const API_BASE = ORIGIN; // /api/...
+const LOCAL_TEMPLATES_BASE = ORIGIN + "/templates/"; // para abrir páginas localmente
 
-// ===== Elementos =====
+// ✅ Vai ser preenchido com o NGROK salvo no backend (se existir)
+let PUBLIC_ORIGIN = "";
+
+// ================= ELEMENTOS =================
 const filaList = document.getElementById("filaList");
 const filaNomeTop = document.getElementById("filaNomeTop");
 const filaLink = document.getElementById("filaLink");
@@ -31,95 +35,152 @@ const btnCopiar = document.getElementById("btnCopiar");
 const btnImprimir = document.getElementById("btnImprimir");
 const toast = document.getElementById("toast");
 
-// Instância do QR
-let qrInstance = null;
-
-// Estado
+// ================= ESTADO =================
 let filas = [];
 let filaSelecionada = null;
 let linkSelecionado = "";
 
-// ===== Helpers =====
-function showToast(msg){
+// ================= HELPERS =================
+function showToast(msg) {
+  if (!toast) return;
   toast.textContent = msg;
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 1500);
 }
 
-function clearQr(){
+function clearQr() {
+  if (!qrBox) return;
   qrBox.innerHTML = "";
-  qrInstance = null;
 }
 
-function renderQr(text){
+function renderQr(text) {
+  if (typeof QRCode === "undefined") {
+    showToast("Erro: QRCode não carregou. Verifique /static/js/qrcodegen.js");
+    return;
+  }
+
   clearQr();
-  // a lib qrcodegen.js expõe QRCode (como você já usa)
-  qrInstance = new QRCode(qrBox, {
+  new QRCode(qrBox, {
     text,
     width: 230,
     height: 230,
     colorDark: "#000000",
     colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
+    correctLevel: QRCode.CorrectLevel.H,
   });
 }
 
-/**
- * Gera link ABSOLUTO pro cliente, preservando a pasta onde está seu projeto.
- * Ex: se você abrir Qr_code.html em http://192.168.56.1:5500/Projeto/Qr_code.html
- * vai gerar: http://192.168.56.1:5500/Projeto/Fila_cliente.html?filaId=...
- */
-function gerarLinkCliente(filaId){
-  const url = new URL("Fila_cliente.html", window.location.href);
-  url.searchParams.set("filaId", filaId);
+function normalizarFila(item) {
+  const id =
+    item.id ??
+    item.idFila ??
+    item.id_fila ??
+    item.idFilaDigital ??
+    item.idFilaINT ??
+    item.idFilaPk;
+
+  return {
+    ...item,
+    __id: id,
+    nome: item.nome || item.nome_fila || item.fila_nome || (id ? `Fila #${id}` : "Fila"),
+    status: item.status || item.status_fila,
+    ativa: item.ativa ?? (String(item.status || "").toUpperCase() === "ABERTA"),
+  };
+}
+
+// ================= ✅ Pega NGROK salvo no backend =================
+async function carregarPublicUrl() {
+  try {
+    const res = await fetch(`${API_BASE}/api/public-url`, { cache: "no-store" });
+    if (!res.ok) return;
+
+    const data = await res.json().catch(() => null);
+    const url = (data?.public_url || "").trim().replace(/\/+$/, "");
+
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      PUBLIC_ORIGIN = url;
+    }
+  } catch {
+    // se falhar, segue com origin local mesmo
+  }
+}
+
+// ================= LINK PARA CLIENTE (QR) =================
+// ✅ Se PUBLIC_ORIGIN existir -> QR usa NGROK
+// ✅ Se não existir -> QR usa o local (útil para teste)
+function gerarLinkCliente(filaId) {
+  const base = (PUBLIC_ORIGIN || ORIGIN).replace(/\/+$/, "");
+  const url = new URL(`${base}/templates/login.html`);
+  url.searchParams.set("next", "Fila_cliente.html");
+  url.searchParams.set("filaId", String(filaId));
   return url.toString();
 }
 
-function renderLista(){
+// ================= LISTA DE FILAS =================
+function renderLista() {
   if (!filaList) return;
 
-  if (!filas.length){
-    filaList.innerHTML = `<p style="opacity:.6">Nenhuma fila encontrada no banco.</p>`;
+  if (!filas.length) {
+    filaList.innerHTML = `<p style="opacity:.6">Nenhuma fila encontrada.</p>`;
     return;
   }
 
-  filaList.innerHTML = filas.map(f => `
-    <div class="queue-card ${f.id === filaSelecionada?.id ? "" : "inactive"}" data-id="${f.id}">
-      <div>
-        <div class="queue-title">${f.nome}</div>
-        <div class="queue-sub">${f.endereco}</div>
-      </div>
-      <span class="badge">${f.ativa ? "Ativa" : "Inativa"}</span>
-    </div>
-  `).join("");
+  filaList.innerHTML = filas
+    .map((f) => {
+      const id = f.__id;
+      const nome = f.nome || `Fila #${id}`;
+      const statusRaw = f.status || (f.ativa ? "ABERTA" : "FECHADA");
+      const status = String(statusRaw || "").toUpperCase();
+      const isOpen = status === "ABERTA" || f.ativa === true;
 
-  filaList.querySelectorAll(".queue-card").forEach(card => {
+      const isSelected = String(id) === String(filaSelecionada?.__id);
+
+      return `
+        <div class="queue-card ${isSelected ? "" : "inactive"}" data-id="${String(id)}">
+          <div>
+            <div class="queue-title">${nome}</div>
+            <div class="queue-sub">Status: ${status || "-"}</div>
+          </div>
+          <span class="badge">${isOpen ? "Aberta" : "Fechada"}</span>
+        </div>
+      `;
+    })
+    .join("");
+
+  filaList.querySelectorAll(".queue-card").forEach((card) => {
     card.addEventListener("click", () => {
-      const id = card.dataset.id;
-      const f = filas.find(x => x.id === id);
+      const id = String(card.dataset.id || "");
+      const f = filas.find((x) => String(x.__id) === id);
       if (!f) return;
+
       filaSelecionada = f;
       renderTudo();
     });
   });
 }
 
-function renderTudo(){
+// ================= RENDER PRINCIPAL =================
+function renderTudo() {
   renderLista();
 
   if (!filaSelecionada) return;
 
-  linkSelecionado = gerarLinkCliente(filaSelecionada.id);
+  const id = filaSelecionada.__id;
+  const nome = filaSelecionada.nome || `Fila #${id}`;
 
-  filaNomeTop.textContent = filaSelecionada.nome;
+  linkSelecionado = gerarLinkCliente(id);
 
-  filaLink.textContent = linkSelecionado;
-  filaLink.href = linkSelecionado;
+  if (filaNomeTop) filaNomeTop.textContent = nome;
+
+  if (filaLink) {
+    filaLink.textContent = linkSelecionado;
+    filaLink.href = linkSelecionado;
+  }
 
   renderQr(linkSelecionado);
 }
 
-// ===== Ações =====
+// ================= AÇÕES =================
 btnOpenLink?.addEventListener("click", () => {
   if (!linkSelecionado) return;
   window.open(linkSelecionado, "_blank", "noopener");
@@ -127,10 +188,11 @@ btnOpenLink?.addEventListener("click", () => {
 
 btnCopiar?.addEventListener("click", async () => {
   if (!linkSelecionado) return;
-  try{
+
+  try {
     await navigator.clipboard.writeText(linkSelecionado);
     showToast("Link copiado!");
-  }catch{
+  } catch {
     const temp = document.createElement("textarea");
     temp.value = linkSelecionado;
     document.body.appendChild(temp);
@@ -142,21 +204,18 @@ btnCopiar?.addEventListener("click", async () => {
 });
 
 btnBaixar?.addEventListener("click", () => {
-  const img = qrBox.querySelector("img");
-  const canvas = qrBox.querySelector("canvas");
+  const img = qrBox?.querySelector("img");
+  const canvas = qrBox?.querySelector("canvas");
 
   let dataUrl = "";
   if (canvas) dataUrl = canvas.toDataURL("image/png");
   else if (img) dataUrl = img.src;
 
-  if (!dataUrl){
-    showToast("Não foi possível baixar.");
-    return;
-  }
+  if (!dataUrl) return showToast("Erro ao baixar.");
 
   const a = document.createElement("a");
   a.href = dataUrl;
-  a.download = `QR_${filaSelecionada?.id || "fila"}.png`;
+  a.download = `QR_Fila_${filaSelecionada?.__id || "fila"}.png`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -164,50 +223,58 @@ btnBaixar?.addEventListener("click", () => {
 });
 
 btnImprimir?.addEventListener("click", () => {
-  const img = qrBox.querySelector("img");
-  const canvas = qrBox.querySelector("canvas");
+  const img = qrBox?.querySelector("img");
+  const canvas = qrBox?.querySelector("canvas");
 
   let dataUrl = "";
   if (canvas) dataUrl = canvas.toDataURL("image/png");
   else if (img) dataUrl = img.src;
 
-  if (!dataUrl){
-    showToast("Não foi possível imprimir.");
-    return;
-  }
+  if (!dataUrl) return showToast("Erro ao imprimir.");
 
   const w = window.open("", "_blank", "noopener");
   if (!w) return;
+
+  const nome = filaSelecionada?.nome || `Fila #${filaSelecionada?.__id || ""}`;
+
   w.document.write(`
-    <html><head><title>Imprimir QR</title></head>
-    <body style="display:grid;place-items:center;margin:0;height:100vh">
-      <div style="text-align:center;font-family:Arial">
-        <h2>${filaSelecionada?.nome || "Fila"}</h2>
-        <img src="${dataUrl}" style="width:300px;height:300px"/>
-        <p>${linkSelecionado}</p>
-      </div>
-      <script>window.onload=()=>{window.print();}</script>
-    </body></html>
+    <html>
+      <head><title>Imprimir QR</title></head>
+      <body style="display:grid;place-items:center;height:100vh;margin:0">
+        <div style="text-align:center;font-family:Arial;max-width:90vw">
+          <h2>${nome}</h2>
+          <img src="${dataUrl}" width="300" height="300"/>
+          <p style="word-break:break-all">${linkSelecionado}</p>
+        </div>
+        <script>window.onload=()=>window.print()</script>
+      </body>
+    </html>
   `);
+
   w.document.close();
 });
 
-// ===== Carregar filas do banco =====
-async function carregarFilas(){
-  try{
-    const res = await fetch(`${API_BASE}/api/filas`);
-    if (!res.ok) throw new Error("Falha ao buscar filas");
-    filas = await res.json();
+// ================= CARREGAR FILAS =================
+async function carregarFilas() {
+  try {
+    const res = await fetch(`${API_BASE}/api/filas`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    // seleciona a primeira ativa, se existir, senão a primeira
-    filaSelecionada = filas.find(f => !!f.ativa) || filas[0] || null;
+    const data = await res.json();
+    filas = (Array.isArray(data) ? data : []).map(normalizarFila);
+
+    filaSelecionada = filas.find((f) => f.ativa === true) || filas[0] || null;
 
     renderTudo();
-  }catch(err){
-    console.error(err);
-    filaList.innerHTML = `<p style="opacity:.6">Erro ao carregar filas da API.</p>`;
+  } catch (err) {
+    console.error("Erro carregarFilas:", err);
+    if (filaList) filaList.innerHTML = `<p style="opacity:.6">Erro ao carregar filas.</p>`;
     showToast("Erro ao carregar filas");
   }
 }
 
-carregarFilas();
+// ================= INIT =================
+(async function init() {
+  await carregarPublicUrl(); // ✅ pega o NGROK do backend
+  await carregarFilas();     // ✅ lista filas e gera QR
+})();
