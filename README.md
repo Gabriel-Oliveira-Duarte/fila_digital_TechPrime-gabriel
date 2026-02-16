@@ -37,7 +37,8 @@ Antes de começar, instale na máquina:
 Abra o terminal na pasta onde deseja salvar o projeto:
 
 ```powershell
-git clone https://github.com/Gabriel-Oliveira-Duarte/fila_digital_TechPrime-gabriel.git cd fila_digital_TechPrime-gabriel
+git clone https://github.com/Gabriel-Oliveira-Duarte/fila_digital_TechPrime-gabriel.git
+cd fila_digital_TechPrime-gabriel
 
 ```
 
