@@ -1,5 +1,4 @@
 
----
 
 # 📘 RELATÓRIO COMPLETO — Configuração e Execução do Projeto (Windows)
 
