@@ -1,20 +1,28 @@
 # fila_digital_TechPrime-gabriel
 Este repositório foi criado para dar continuidade ao desenvolvimento após limitações de acesso ao repositório original, permitindo implementar melhorias, ajustes, testes e versionamento independente, com possibilidade de integração futura.
-Perfeito, Gabriel — já está tudo muito bem estruturado 👍
-Abaixo está **o README.md completo**, **sem cortar absolutamente nada**, com **todos os tópicos, subtópicos, observações, alertas e checklists exatamente como você pediu**, pronto pra colar direto no repositório.
+Segue o **README.md corrigido e pronto pra colar**, já com:
+
+* ✅ `git clone` e `cd` com o **seu repositório real**
+* ✅ reforço de **abrir no navegador (sem Live Server)**
+* ✅ passo “**2 terminais**” (API e ngrok)
+* ✅ teste de **/assets** (pra garantir imagens do index)
+* ✅ **SQL mantido igual ao que você enviou** (não alterei nada no script)
+
+> **Cole isso inteiro no seu `README.md` do GitHub.**
 
 ---
 
+````md
 # 📘 RELATÓRIO COMPLETO — Configuração e Execução do Projeto (Windows)
 
 Este **README** descreve **PASSO A PASSO**, de forma **100% completa**, como **configurar e rodar o projeto do zero em outra máquina Windows**, incluindo:
 
-* MySQL
-* FastAPI
-* ngrok
-* link público
-* geração de QR Code
-* teste completo no celular
+- MySQL
+- FastAPI
+- ngrok
+- link público
+- geração de QR Code
+- teste completo no celular
 
 Seguindo este guia, **qualquer pessoa consegue rodar o sistema sem ajuda externa**.
 
@@ -24,11 +32,11 @@ Seguindo este guia, **qualquer pessoa consegue rodar o sistema sem ajuda externa
 
 Antes de começar, instale na máquina:
 
-* **Python 3.11+** (recomendado)
+- **Python 3.11+** (recomendado)  
   ✅ Durante a instalação, marque **“Add Python to PATH”**
-* **MySQL Server 8.0+**
-* **VS Code** (opcional, mas recomendado)
-* **Git** (opcional, se for clonar o repositório)
+- **MySQL Server 8.0+**
+- **VS Code** (opcional, mas recomendado)
+- **Git** (opcional, se for clonar o repositório)
 
 ---
 
@@ -37,16 +45,16 @@ Antes de começar, instale na máquina:
 Abra o terminal na pasta onde deseja salvar o projeto:
 
 ```powershell
-git clone <URL_DO_REPOSITORIO>
-cd fila_digital_TechPrime
-```
+git clone https://github.com/Gabriel-Oliveira-Duarte/fila_digital_TechPrime-gabriel.git
+cd fila_digital_TechPrime-gabriel
+````
 
 ### Caso tenha baixado em ZIP
 
 Apenas extraia o arquivo e entre na pasta do projeto:
 
 ```powershell
-cd fila_digital_TechPrime
+cd fila_digital_TechPrime-gabriel
 ```
 
 ---
@@ -156,18 +164,18 @@ CREATE TABLE atendimento (
 );
 
 CREATE TABLE fila(
-    idFila INT AUTO_INCREMENT PRIMARY KEY,
+    idFila INT AUTO_INCREMENT  PRIMARY KEY,
     status ENUM('ABERTA','FECHADA'),
     data_criacao DATETIME,
     data_fechamento DATETIME,
     cliente_idCliente INT,
     estabelecimento_idEstabelecimento INT,
     
-    FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente),
-    FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
-);
-
-CREATE TABLE qr_code (
+    FOREIGN KEY (cliente_idCLiente) REFERENCES cliente(idCliente),
+	FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+    );
+    
+    CREATE TABLE qr_code (
     idQRCode INT AUTO_INCREMENT PRIMARY KEY,
     data_criacao DATETIME,
 
@@ -179,7 +187,6 @@ CREATE TABLE qr_code (
     FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente),
     FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
 );
-
 ALTER TABLE estabelecimento DROP COLUMN latitude;
 ALTER TABLE estabelecimento DROP COLUMN longitude;
 
@@ -187,7 +194,7 @@ ALTER TABLE estabelecimento
   ADD latitude DECIMAL(10,8) NULL,
   ADD longitude DECIMAL(11,8) NULL;
 
-SELECT * FROM estabelecimento;
+select *from estabelecimento;
 ```
 
 ### Conferir se as tabelas existem
@@ -247,24 +254,42 @@ pip install "pydantic[email]"
 
 ## 4️⃣ Rodar a API FastAPI (porta 8010)
 
+> ✅ Use **2 terminais**: um pra API e outro pro ngrok.
+
+### Terminal 1 — FastAPI
+
 ```powershell
 uvicorn main:app --reload --host 0.0.0.0 --port 8010
 ```
 
-### Testes
+### Testes (abra no navegador)
 
 * Swagger / Docs
-  👉 [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
+  👉 `http://127.0.0.1:8010/docs`
 
 * Index
-  👉 [http://127.0.0.1:8010/](http://127.0.0.1:8010/)
+  👉 `http://127.0.0.1:8010/`
 
 * Painel QR Code
-  👉 [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
+  👉 `http://127.0.0.1:8010/templates/Qr_code.html`
 
-⚠️ **NÃO usar Live Server**
+✅ Teste EXTRA (pra garantir imagens/arquivos do index):
+Abra esta URL no navegador e veja se a imagem carrega:
 
-O sistema **precisa rodar pelo FastAPI**, pois `/api`, `/static`, `/assets` e `/templates` estão no mesmo servidor.
+* `http://127.0.0.1:8010/assets/img/NAV3.png`
+
+Se abrir a imagem, **/assets está ok** e o index deve abrir com imagens.
+
+---
+
+## 🔟 IMPORTANTE — Não usar Live Server
+
+⚠️ O sistema **precisa rodar pelo FastAPI**, pois `/api`, `/static`, `/assets` e `/templates` estão no mesmo servidor.
+
+✅ Abra sempre colando a URL no navegador:
+
+* `http://127.0.0.1:8010/`
+* `http://127.0.0.1:8010/templates/Qr_code.html`
 
 ---
 
@@ -290,8 +315,8 @@ where.exe ngrok
 
 ### 5.2️⃣ Criar conta e pegar o Authtoken
 
-* Criar conta no site do ngrok
-* Copiar **Your Authtoken**
+1. Criar conta no site do ngrok
+2. No painel, copiar **Your Authtoken**
 
 ---
 
@@ -311,6 +336,8 @@ ngrok config check
 
 ### 5.4️⃣ Subir túnel (link público)
 
+### Terminal 2 — ngrok
+
 Com a API rodando:
 
 ```powershell
@@ -322,6 +349,8 @@ Exemplo:
 ```
 Forwarding https://SEU-LINK.ngrok-free.dev -> http://localhost:8010
 ```
+
+✅ Esse link `https://...` é o **LINK PÚBLICO** que o cliente vai usar no celular.
 
 ---
 
@@ -352,7 +381,7 @@ Endpoints:
 * `GET /api/public-url`
 
 Swagger:
-👉 [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
+👉 `http://127.0.0.1:8010/docs`
 
 ### 6.1️⃣ POST
 
@@ -370,11 +399,11 @@ Confirme se retorna o mesmo link.
 
 ## 7️⃣ Gerar QR Code do estabelecimento
 
-* Local:
-  👉 [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
+* Local (PC):
+  👉 `http://127.0.0.1:8010/templates/Qr_code.html`
 
-* Público:
-  👉 [https://SEU-LINK.ngrok-free.dev/templates/Qr_code.html](https://SEU-LINK.ngrok-free.dev/templates/Qr_code.html)
+* Público (igual celular):
+  👉 `https://SEU-LINK.ngrok-free.dev/templates/Qr_code.html`
 
 🔥 **O QR sempre aponta para o link público (ngrok)**
 
@@ -396,13 +425,16 @@ Confirme se retorna o mesmo link.
 ## 9️⃣ Checklist rápido (quando algo não funciona)
 
 * API ativa?
-  [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
+  `http://127.0.0.1:8010/docs`
 
 * Index abre?
-  [http://127.0.0.1:8010/](http://127.0.0.1:8010/)
+  `http://127.0.0.1:8010/`
+
+* Index com imagens (teste /assets)?
+  `http://127.0.0.1:8010/assets/img/NAV3.png`
 
 * QR lista filas?
-  [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
+  `http://127.0.0.1:8010/templates/Qr_code.html`
 
 * Ngrok ativo?
   `ngrok http 8010`
@@ -415,25 +447,7 @@ Confirme se retorna o mesmo link.
 
 ---
 
-## 🔟 IMPORTANTE — Não usar Live Server
-
-❌ Live Server não garante:
-
-* `/api/...`
-* `/static/...`
-* `/assets/...`
-* templates integrados
-
-✅ Use sempre:
-
-```text
-http://127.0.0.1:8010/
-http://127.0.0.1:8010/templates/Qr_code.html
-```
-
----
-
-## 1️⃣1️⃣ (Opcional) MySQL via .env
+## 1️⃣1️⃣ (Opcional) MySQL via .env (somente se NÃO for root/root)
 
 ### 11.1️⃣ Criar `.env.example`
 
@@ -446,8 +460,6 @@ DB_PORT=3306
 ```
 
 ### 11.2️⃣ Copiar para `.env` e ajustar
-
----
 
 ### 11.3️⃣ main.py (get_conn)
 
@@ -485,12 +497,12 @@ Seguindo este README, qualquer pessoa consegue:
 * ✅ Subir MySQL e criar o banco
 * ✅ Instalar dependências
 * ✅ Rodar FastAPI corretamente
+* ✅ Abrir index com imagens (assets ok)
 * ✅ Configurar ngrok
 * ✅ Atualizar link público
 * ✅ Gerar QR funcional
 * ✅ Testar tudo no celular
 * ✅ Fluxo completo funcionando
 
----
-
+```
 
