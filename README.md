@@ -394,7 +394,7 @@ https://SEU-LINK.ngrok-free.dev/templates/index.html
 
 
 
-## 1️⃣1️⃣ Checklist ngrok (o link MUDA toda vez que você reinicia)
+## 1️⃣0️⃣ Checklist ngrok (o link MUDA toda vez que você reinicia)
 
 1. `ngrok http 8010`
 2. Copiar novo link
