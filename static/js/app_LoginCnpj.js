@@ -1,7 +1,7 @@
 // static/js/app_LoginCnpj.js
 
-// 🔹 FastAPI rodando em 8010
-const API_BASE = "http://127.0.0.1:8010";
+// ✅ API: usa o mesmo origin (funciona em localhost e ngrok)
+const API_BASE = window.location.origin;
 
 // ================= FETCH =================
 async function postJSON(path, data) {
@@ -32,7 +32,6 @@ async function postJSON(path, data) {
 }
 
 // ================= HELPERS =================
-function existe(el) { return el !== null && el !== undefined; }
 function onlyDigits(v) { return (v || "").replace(/\D/g, ""); }
 
 function emailValido(email) {
@@ -43,9 +42,23 @@ function normalizarEmail(email) {
   return (email || "").trim().toLowerCase();
 }
 
+// ✅ pega id do retorno do backend (compatível com vários formatos)
+function extrairEstabId(data) {
+  const candidatos = [
+    data?.estabelecimento_id,
+    data?.estabelecimentoId,
+    data?.idEstabelecimento,
+    data?.id,
+    data?.estabelecimento?.id,
+    data?.estabelecimento?.idEstabelecimento,
+    data?.user?.id,
+  ];
+  const id = candidatos.find(v => Number(v) > 0);
+  return id ? Number(id) : null;
+}
+
 // ================= ELEMENTOS =================
 const bizError = document.getElementById("bizError");
-
 const signupError = document.getElementById("signupError");
 const signupError2 = document.getElementById("signupError2");
 
@@ -76,18 +89,6 @@ const signupBizPhone = document.getElementById("signupBizPhone");
 const signupBizEmail = document.getElementById("signupBizEmail");
 const signupBizPass = document.getElementById("signupBizPass");
 const signupBizPass2 = document.getElementById("signupBizPass2");
-
-// ================= LOCAL STORAGE =================
-const STORAGE_KEY_BIZ = "andalogo_estabelecimentos";
-
-function getBizDB() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY_BIZ) || "{}"); }
-  catch { return {}; }
-}
-
-function setBizDB(db) {
-  localStorage.setItem(STORAGE_KEY_BIZ, JSON.stringify(db));
-}
 
 // ================= UI =================
 function mostrarApenas(target) {
@@ -149,25 +150,37 @@ function validarEtapa2() {
   return "";
 }
 
-// ================= CADASTRO =================
+// ================= CADASTRO (POST /api/estabelecimentos) =================
 btnSignupBiz?.addEventListener("click", async () => {
-
   const msg = validarEtapa2();
   if (msg) {
     signupError2.textContent = msg;
     return;
   }
-
   signupError2.textContent = "";
+
+  // ✅ normaliza categoria para o ENUM do banco
+  const categoriaMap = {
+    "Clínica": "CLINICA",
+    "Barbearia": "BARBEARIA",
+    "Salão": "SALAO",
+    "Estética": "ESTETICA",
+    "Restaurante": "RESTAURANTE",
+    "Açougue": "ACOUGUE",
+    "Supermercad": "SUPERMERCADO",
+    "Outros": "SUPERMERCADO", // não existe OUTROS no ENUM -> manda algo válido
+  };
+
+  const categoria = categoriaMap[signupBizCategory.value.trim()] || "BARBEARIA";
 
   const payload = {
     nome: signupBizName.value.trim(),
     cidade: signupBizCity.value.trim(),
     cnpj: signupBizCnpj.value.trim(),
-    categoria: signupBizCategory.value.trim(),
+    categoria,
     estado: signupBizUF.value.trim(),
     telefone: signupBizPhone.value.trim(),
-    email: signupBizEmail.value.trim(),
+    email: normalizarEmail(signupBizEmail.value),
     senha: signupBizPass.value,
     latitude: null,
     longitude: null,
@@ -175,59 +188,54 @@ btnSignupBiz?.addEventListener("click", async () => {
   };
 
   try {
+    const resp = await postJSON("/api/estabelecimentos", payload);
 
-    // 👉 envia para FastAPI
-    await postJSON("/api/estabelecimentos", payload);
-
-    // 👉 salva localmente para login atual
-    const db = getBizDB();
-    const emailNorm = normalizarEmail(payload.email);
-
-    db[emailNorm] = {
-      senha: payload.senha,
-      nome: payload.nome
-    };
-
-    setBizDB(db);
+    // ✅ opcional: se a API retornar id, você já pode salvar
+    const id = extrairEstabId(resp) || resp?.id || null;
+    if (id) localStorage.setItem("estabelecimento_id", String(id));
+    localStorage.setItem("estabelecimento_nome", payload.nome);
 
     abrirModoBiz();
-    bizEmail.value = emailNorm;
+    bizEmail.value = payload.email;
     bizPass.value = "";
     bizError.textContent = "Conta criada! Faça login.";
 
   } catch (e) {
     signupError2.textContent = e.message;
   }
-
 });
 
-// ================= LOGIN =================
-btnBiz?.addEventListener("click", () => {
-
-  console.log("LOGIN CLICADO"); // 🔍 Debug
+// ================= LOGIN (POST /api/login-estabelecimento) =================
+btnBiz?.addEventListener("click", async () => {
+  bizError.textContent = "";
 
   const email = normalizarEmail(bizEmail.value);
-  const pass = bizPass.value;
+  const senha = bizPass.value;
 
   if (!emailValido(email)) {
     bizError.textContent = "Email inválido.";
     return;
   }
-
-  const db = getBizDB();
-  const user = db[email];
-
-  if (!user) {
-    bizError.textContent = "E-mail não cadastrado.";
+  if (!senha) {
+    bizError.textContent = "Digite a senha.";
     return;
   }
 
-  if (user.senha !== pass) {
-    bizError.textContent = "Senha incorreta.";
-    return;
+  try {
+    const data = await postJSON("/api/login-estabelecimento", { email, senha });
+
+    const estabId = extrairEstabId(data);
+    if (!estabId) {
+      console.log("Resposta do login:", data);
+      throw new Error("Login OK, mas a API não retornou o id do estabelecimento.");
+    }
+
+    // ✅ salva id no localStorage (isso destrava Criar Fila e QR Code)
+    localStorage.setItem("estabelecimento_id", String(estabId));
+    if (data?.nome) localStorage.setItem("estabelecimento_nome", data.nome);
+
+    window.location.href = "/templates/Dashboard.html";
+  } catch (e) {
+    bizError.textContent = e.message;
   }
-
-  // ✅ LOGIN OK → REDIRECIONA
-  window.location.href = "/templates/Dashboard.html";
-
 });

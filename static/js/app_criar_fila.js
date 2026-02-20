@@ -52,7 +52,12 @@ const listaFilas = document.getElementById("listaFilas");
 
 const STORAGE_KEY = "filasCriadas";
 
-// helper: evita quebrar se localStorage estiver com JSON inválido
+// ✅ API: mesma origem (funciona em localhost e ngrok)
+const API_BASE = window.location.origin;
+
+// ===============================
+// HELPERS localStorage
+// ===============================
 function obterFilas(){
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -69,7 +74,31 @@ function gerarID(){
   return "fila_" + Math.random().toString(36).slice(2,8).toUpperCase();
 }
 
-// render lado direito
+// ===============================
+// FETCH helper
+// ===============================
+async function postJSON(path, data) {
+  const res = await fetch(API_BASE + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  const payload = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new Error(payload?.detail || `Erro HTTP ${res.status}`);
+  }
+
+  return payload;
+}
+
+// ===============================
+// render lado direito (filas existentes)
+// agora mostra:
+// - ID do banco (idFila) quando existir
+// - e também o id local (fila_xxx) se você quiser manter
+// ===============================
 function renderFilas(){
   if (!listaFilas) return;
 
@@ -85,14 +114,19 @@ function renderFilas(){
     const item = document.createElement("div");
     item.className = "queue-item";
 
+    const statusTxt = fila.status || (fila.ativa ? "ABERTA" : "FECHADA");
+    const idBanco = fila.idFila ? `ID Banco: ${fila.idFila}` : "";
+    const idLocal = fila.id ? `ID Local: ${fila.id}` : "";
+
     item.innerHTML = `
       <div class="queue-left">
         <div class="queue-title">${fila.nome}</div>
         <div class="queue-sub">${fila.endereco}</div>
-        <div class="queue-sub">ID: ${fila.id}</div>
+        ${idBanco ? `<div class="queue-sub">${idBanco}</div>` : ""}
+        ${idLocal ? `<div class="queue-sub">${idLocal}</div>` : ""}
       </div>
-      <span class="badge ${fila.ativa ? "badge-on" : ""}">
-        ${fila.ativa ? "Ativa" : "Inativa"}
+      <span class="badge ${statusTxt === "ABERTA" ? "badge-on" : ""}">
+        ${statusTxt === "ABERTA" ? "Ativa" : "Inativa"}
       </span>
     `;
 
@@ -100,9 +134,18 @@ function renderFilas(){
   });
 }
 
-// salvar nova fila
+// ===============================
+// salvar nova fila (AGORA SALVA NO BANCO)
+// ===============================
 if (btnSalvar){
-  btnSalvar.addEventListener("click", () => {
+  btnSalvar.addEventListener("click", async () => {
+
+    // ✅ precisa estar logado
+    const estabId = Number(localStorage.getItem("estabelecimento_id") || 0);
+    if (!estabId) {
+      alert("Faça login novamente. ID do estabelecimento não encontrado.");
+      return;
+    }
 
     const nome = (nomeFila?.value || "").trim();
     const endereco = (enderecoFila?.value || "").trim();
@@ -113,33 +156,59 @@ if (btnSalvar){
       return;
     }
 
-    const novaFila = {
-      id: gerarID(),
+    // ✅ payload para seu backend (main.py)
+    const payloadAPI = {
+      estabelecimento_id: estabId,
+      status: (toggleAtiva?.checked ? "ABERTA" : "FECHADA"),
       nome,
       endereco,
-      raio: rangeMeters ? Number(rangeMeters.value) : 500,
-      tempoMedio: tempo,
-      capacidade: capacidade?.value ? Number(capacidade.value) : null,
-      ativa: !!toggleAtiva?.checked,
-      mensagem: (msgBoasVindas?.value || "").trim(),
-      horario: (horario?.value || "").trim(),
-      observacoes: (observacoes?.value || "").trim(),
-      criadaEm: Date.now()
+      raio_metros: rangeMeters ? Number(rangeMeters.value) : 500,
+      tempo_medio_min: tempo,
+      capacidade_max: capacidade?.value ? Number(capacidade.value) : null,
+      mensagem_boas_vindas: (msgBoasVindas?.value || "").trim() || null,
+      horario_funcionamento: (horario?.value || "").trim() || null,
+      observacoes: (observacoes?.value || "").trim() || null,
     };
 
-    const filas = obterFilas();
-    filas.push(novaFila);
-    salvarFilas(filas);
+    try {
+      // ✅ cria no banco
+      const resp = await postJSON("/api/filas", payloadAPI);
 
-    renderFilas();
+      // ✅ mantém também um “espelho” no localStorage (opcional, mas útil pro painel)
+      const novaFilaLocal = {
+        id: gerarID(), // id local (não é o id do banco)
+        idFila: resp?.idFila, // id do banco
+        nome,
+        endereco,
+        raio: payloadAPI.raio_metros,
+        tempoMedio: tempo,
+        capacidade: payloadAPI.capacidade_max,
+        ativa: payloadAPI.status === "ABERTA",
+        status: payloadAPI.status,
+        mensagem: payloadAPI.mensagem_boas_vindas,
+        horario: payloadAPI.horario_funcionamento,
+        observacoes: payloadAPI.observacoes,
+        criadaEm: Date.now()
+      };
 
-    // limpa form (mantém raio e ativa como estão)
-    if (nomeFila) nomeFila.value = "";
-    if (enderecoFila) enderecoFila.value = "";
-    if (msgBoasVindas) msgBoasVindas.value = "";
-    if (horario) horario.value = "";
-    if (observacoes) observacoes.value = "";
-    if (capacidade) capacidade.value = "";
+      const filas = obterFilas();
+      filas.unshift(novaFilaLocal); // coloca no topo
+      salvarFilas(filas);
+      renderFilas();
+
+      alert(`Fila criada no banco! ID: ${resp.idFila}`);
+
+      // limpa form (mantém raio e ativa como estão)
+      if (nomeFila) nomeFila.value = "";
+      if (enderecoFila) enderecoFila.value = "";
+      if (msgBoasVindas) msgBoasVindas.value = "";
+      if (horario) horario.value = "";
+      if (observacoes) observacoes.value = "";
+      if (capacidade) capacidade.value = "";
+
+    } catch (e) {
+      alert(e.message || "Erro ao criar fila");
+    }
   });
 }
 

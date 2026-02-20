@@ -110,9 +110,16 @@ async function carregarPublicUrl() {
 // ✅ Se não existir -> QR usa o local (útil para teste)
 function gerarLinkCliente(filaId) {
   const base = (PUBLIC_ORIGIN || ORIGIN).replace(/\/+$/, "");
+
+  // ✅ login dentro de /templates
   const url = new URL(`${base}/templates/login.html`);
-  url.searchParams.set("next", "Fila_cliente.html");
+
+  // ✅ next também com /templates (pra não dar 404)
+  url.searchParams.set("next", "/templates/Fila_cliente.html");
+
+  // ✅ id da fila
   url.searchParams.set("filaId", String(filaId));
+
   return url.toString();
 }
 
@@ -257,24 +264,75 @@ btnImprimir?.addEventListener("click", () => {
 // ================= CARREGAR FILAS =================
 async function carregarFilas() {
   try {
-    const res = await fetch(`${API_BASE}/api/filas`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const estabIdRaw = localStorage.getItem("estabelecimento_id");
+    const estabId = Number(estabIdRaw);
 
-    const data = await res.json();
-    filas = (Array.isArray(data) ? data : []).map(normalizarFila);
+    console.log("[QR] estabelecimento_id (raw):", estabIdRaw, "->", estabId);
+
+    if (!Number.isFinite(estabId) || estabId <= 0) {
+      if (filaList) filaList.innerHTML = `<p style="opacity:.6">Faça login para ver as filas.</p>`;
+      clearQr();
+      if (filaLink) { filaLink.textContent = ""; filaLink.href = "#"; }
+      showToast("Faça login primeiro");
+      return;
+    }
+
+    const url = `${API_BASE}/api/filas?estabelecimento_id=${encodeURIComponent(estabId)}`;
+    console.log("[QR] GET:", url);
+
+    const res = await fetch(url, { cache: "no-store" });
+
+    const contentType = res.headers.get("content-type") || "";
+    let data;
+
+    if (contentType.includes("application/json")) {
+      data = await res.json().catch(() => null);
+    } else {
+      const txt = await res.text().catch(() => "");
+      data = txt;
+    }
+
+    console.log("[QR] status:", res.status, "data:", data);
+
+    if (!res.ok) {
+      throw new Error(
+        (data && data.detail) ? data.detail :
+        (typeof data === "string" && data.trim() ? data : `HTTP ${res.status}`)
+      );
+    }
+
+    // ✅ aceita vários formatos:
+    // - array direto: [...]
+    // - objeto: { filas: [...] } ou { data: [...] }
+    // - swagger bug: "string"
+    let lista = [];
+    if (Array.isArray(data)) lista = data;
+    else if (data && Array.isArray(data.filas)) lista = data.filas;
+    else if (data && Array.isArray(data.data)) lista = data.data;
+    else lista = [];
+
+    filas = lista.map(normalizarFila);
+
+    if (!filas.length) {
+      if (filaList) filaList.innerHTML = `<p style="opacity:.6">Nenhuma fila encontrada para este estabelecimento.</p>`;
+      clearQr();
+      if (filaLink) { filaLink.textContent = ""; filaLink.href = "#"; }
+      return;
+    }
 
     filaSelecionada = filas.find((f) => f.ativa === true) || filas[0] || null;
-
     renderTudo();
+
   } catch (err) {
     console.error("Erro carregarFilas:", err);
     if (filaList) filaList.innerHTML = `<p style="opacity:.6">Erro ao carregar filas.</p>`;
-    showToast("Erro ao carregar filas");
+    clearQr();
+    if (filaLink) { filaLink.textContent = ""; filaLink.href = "#"; }
+    showToast(err.message || "Erro ao carregar filas");
   }
 }
-
 // ================= INIT =================
 (async function init() {
-  await carregarPublicUrl(); // ✅ pega o NGROK do backend
-  await carregarFilas();     // ✅ lista filas e gera QR
+  await carregarPublicUrl(); // pega public_url se você tiver setado no backend
+  await carregarFilas();     // lista filas e gera QR
 })();
