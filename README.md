@@ -2,27 +2,17 @@
 
 # 📘 RELATÓRIO COMPLETO — Configuração e Execução do Projeto (Windows)
 
-Este **README** descreve **PASSO A PASSO**, de forma **100% completa**, como **configurar e rodar o projeto do zero em outra máquina Windows**, incluindo:
+Este **README** descreve **PASSO A PASSO** de como **configurar e rodar o projeto do zero em outra máquina Windows**.
 
-* MySQL
-* FastAPI
-* ngrok
-* link público
-* geração de QR Code
-* teste completo no celular
-
-Seguindo este guia, **qualquer pessoa consegue rodar o sistema sem ajuda externa**.
-
----
 
 ## 0️⃣ Pré-requisitos
 
 Antes de começar, instale na máquina:
 
-* **Python 3.11+** (recomendado)
+* **Python 3.13.12+** (recomendado)
   ✅ Durante a instalação, marque **“Add Python to PATH”**
 * **MySQL Server 8.0+**
-* **VS Code** (opcional, mas recomendado)
+* **VS Code**
 * **Git** (opcional, se for clonar o repositório)
 
 ---
@@ -33,7 +23,8 @@ Abra o terminal na pasta onde deseja salvar o projeto:
 
 ```powershell
 # Clonar o repositório
-git clone https://github.com/Gabriel-Oliveira-Duarte/fila_digital_TechPrime-gabriel.git
+cd Downloads;
+git clone https://github.com/Gabriel-Oliveira-Duarte/fila_digital_TechPrime-gabriel
 
 # Entrar na pasta do projeto (onde está o main.py)
 cd fila_digital_TechPrime-gabriel
@@ -55,7 +46,7 @@ cd fila_digital_TechPrime-gabriel
 
 ### 2.1️⃣ Iniciar o MySQL (Windows)
 
-Abra o **Prompt de Comando ou PowerShell como Administrador** e execute:
+Abra o **cmd  como Administrador** e execute:
 
 ```powershell
 net start mysql80
@@ -65,17 +56,6 @@ net start mysql80
 
 ---
 
-### 2.2️⃣ Testar conexão com o MySQL
-
-Abra um terminal **normal (sem admin)** e execute:
-
-```powershell
-mysql -u root -p
-```
-
-Digite a senha (no padrão usado no projeto: `root`).
-
----
 
 ### 2.3️⃣ Criar banco de dados e tabelas
 
@@ -91,32 +71,40 @@ CREATE TABLE cliente (
     telefone VARCHAR(45),
     status ENUM('ATIVO','INATIVO') DEFAULT 'ATIVO',
 
-    latitude_atual DECIMAL(10,8),
-    longitude_atual DECIMAL(11,8),
-    ultima_atualizacao DATETIME
+    latitude_atual DECIMAL(10,8) NULL,
+    longitude_atual DECIMAL(11,8) NULL,
+    ultima_atualizacao DATETIME NULL
 );
+
 
 CREATE TABLE posicao_gps (
     idPosicaoGPS INT AUTO_INCREMENT PRIMARY KEY,
     latitude DECIMAL(10,8) NULL,
     longitude DECIMAL(11,8) NULL,
-    data_ultima_atualizacao DATETIME,
+    data_ultima_atualizacao DATETIME NULL,
 
-    cliente_idCliente INT,
-    FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+    cliente_idCliente INT NULL,
+    CONSTRAINT fk_posicao_cliente
+      FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE
 );
+
 
 CREATE TABLE alertas (
     idAlertas INT AUTO_INCREMENT PRIMARY KEY,
     tipo ENUM('ENTRADA_RAIO','SAIDA_RAIO','OUTRO'),
-    mensagem VARCHAR(45),
-    data_emissao DATETIME,
+    mensagem VARCHAR(255),
+    data_emissao DATETIME NULL,
 
-    cliente_idCliente INT,
-    FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+    cliente_idCliente INT NULL,
+    CONSTRAINT fk_alerta_cliente
+      FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS estabelecimento (
+CREATE TABLE estabelecimento (
     idEstabelecimento INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(45) NOT NULL,
     cnpj VARCHAR(18),
@@ -125,10 +113,11 @@ CREATE TABLE IF NOT EXISTS estabelecimento (
     estado VARCHAR(45),
     telefone VARCHAR(15),
 
-    latitude DECIMAL(10,8) NOT NULL,
-    longitude DECIMAL(11,8) NOT NULL,
+    -- (no seu projeto você deixou NULL)
+    latitude DECIMAL(10,8) NULL,
+    longitude DECIMAL(11,8) NULL,
 
-    raio_alerta INT,
+    raio_alerta INT NULL,
 
     email VARCHAR(120) NOT NULL UNIQUE,
     senha VARCHAR(120) NOT NULL
@@ -139,6 +128,7 @@ CREATE TABLE caixa (
     nome VARCHAR(45)
 );
 
+
 CREATE TABLE atendimento (
     idAtendimento INT AUTO_INCREMENT PRIMARY KEY,
     data_inicio DATETIME NOT NULL,
@@ -146,121 +136,127 @@ CREATE TABLE atendimento (
     status ENUM('AGUARDANDO','EM_ATENDIMENTO','FINALIZADO'),
     servico VARCHAR(45),
 
-    cliente_idCliente INT,
-    estabelecimento_idEstabelecimento INT,
-    caixa_idCaixa INT,
+    cliente_idCliente INT NULL,
+    estabelecimento_idEstabelecimento INT NULL,
+    caixa_idCaixa INT NULL,
 
-    FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente),
-    FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento),
-    FOREIGN KEY (caixa_idCaixa) REFERENCES caixa(idCaixa)
+    CONSTRAINT fk_atend_cliente
+      FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE,
+
+    CONSTRAINT fk_atend_estab
+      FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE,
+
+    CONSTRAINT fk_atend_caixa
+      FOREIGN KEY (caixa_idCaixa) REFERENCES caixa(idCaixa)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE
 );
 
-CREATE TABLE fila(
+
+CREATE TABLE fila (
     idFila INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(60) NULL,
+
     status ENUM('ABERTA','FECHADA'),
-    data_criacao DATETIME,
-    data_fechamento DATETIME,
-    cliente_idCliente INT,
-    estabelecimento_idEstabelecimento INT,
-    
-    FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente),
-    FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+    data_criacao DATETIME NULL,
+    data_fechamento DATETIME NULL,
+
+    cliente_idCliente INT NULL,
+    estabelecimento_idEstabelecimento INT NULL,
+
+    CONSTRAINT fk_fila_cliente
+      FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE,
+
+    CONSTRAINT fk_fila_estab
+      FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE
 );
 
 CREATE TABLE qr_code (
     idQRCode INT AUTO_INCREMENT PRIMARY KEY,
-    data_criacao DATETIME,
+    data_criacao DATETIME NULL,
 
-    fila_idFila INT,
-    cliente_idCliente INT,
-    estabelecimento_idEstabelecimento INT,
+    fila_idFila INT NULL,
+    cliente_idCliente INT NULL,
+    estabelecimento_idEstabelecimento INT NULL,
 
-    FOREIGN KEY (fila_idFila) REFERENCES fila(idFila),
-    FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente),
-    FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+    CONSTRAINT fk_qr_fila
+      FOREIGN KEY (fila_idFila) REFERENCES fila(idFila)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE,
+
+    CONSTRAINT fk_qr_cliente
+      FOREIGN KEY (cliente_idCliente) REFERENCES cliente(idCliente)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE,
+
+    CONSTRAINT fk_qr_estab
+      FOREIGN KEY (estabelecimento_idEstabelecimento) REFERENCES estabelecimento(idEstabelecimento)
+      ON DELETE SET NULL
+      ON UPDATE CASCADE
 );
-
-ALTER TABLE estabelecimento DROP COLUMN latitude;
-ALTER TABLE estabelecimento DROP COLUMN longitude;
-
-ALTER TABLE estabelecimento
-  ADD latitude DECIMAL(10,8) NULL,
-  ADD longitude DECIMAL(11,8) NULL;
-
-SELECT * FROM estabelecimento;
-```
-
-### Conferir se as tabelas existem
-
-```sql
-SHOW TABLES;
-```
 
 ---
 
 ### 📌 Observação importante (MySQL)
 
-* ✅ Se a máquina também usar **root / root**, **não precisa alterar nada**
-* ⚠️ Caso **não seja padrão**, veja a seção **11️⃣ (.env)**
+* Observação: no main.py o acesso ao MySQL está como user=root e password=root.
+Se no seu PC for diferente, altere no get_conn().
 
 ---
 
-## 3️⃣ Ambiente Python (venv) + dependências (na pasta do main.py)
+## 3️⃣ Criar e ativar venv
 
-### 3.1️⃣ Criar ambiente virtual (.venv)
-
-Na pasta do projeto:
-
-**PowerShell**
-
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
+No CMD, dentro da pasta do projeto:
 
 **CMD**
 
 ```cmd
-py -m venv .venv
+python -m venv .venv
 .\.venv\Scripts\activate.bat
 ```
 
-✅ Se ativou corretamente, aparece `(.venv)` no terminal.
+✅ Se aparecer (.venv) no terminal, deu certo.
 
 ---
 
 ### 3.2️⃣ Instalar dependências
 
-Com a venv ativa:
+No mesmo terminal onde a venv está ativa:
 
-```powershell
+```cmd
 pip install fastapi uvicorn mysql-connector-python pydantic python-dotenv
 ```
 
-Se usar `EmailStr`:
-
-```powershell
+```cmd
 pip install "pydantic[email]"
 ```
 
 ---
 
-## 4️⃣ Rodar a API FastAPI (porta 8010)
+## 4️⃣ Rodar a API (FastAPI)
 
-```powershell
+Ainda dentro do mesmo cmd rode:
+
+```cmd
 uvicorn main:app --reload --host 0.0.0.0 --port 8010
 ```
 
 ### Testes
 
 * Swagger / Docs
-  👉 [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
+  👉 [[http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)]
 
 * Index
-  👉 [http://127.0.0.1:8010/](http://127.0.0.1:8010/)
+  👉 [http://127.0.0.1:8010/templates/index.html](http://127.0.0.1:8010/templates/index.html)
 
-* Painel QR Code
-  👉 [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
 
 ⚠️ **NÃO usar Live Server**
 
@@ -272,7 +268,7 @@ O sistema **precisa rodar pelo FastAPI**, pois `/api`, `/static`, `/assets` e `/
 
 ### 5.1️⃣ Instalar o ngrok
 
-Baixe e instale o ngrok (conta Free).
+Baixe e instale o ngrok.
 
 Verificar instalação:
 
@@ -297,64 +293,43 @@ where.exe ngrok
 
 ### 5.3️⃣ Configurar token no Windows
 
-```powershell
+```cmd
 ngrok config add-authtoken SEU_TOKEN_AQUI
 ```
 
 Conferir:
 
-```powershell
+```cmd
 ngrok config check
 ```
 
 ---
 
-### 5.4️⃣ Subir túnel (link público)
+### 5.4️⃣ Subir o Ngrok (URL pública)
 
-Com a API rodando:
+Abra OUTRO terminal (pode ser no cmd) e rode:
 
-```powershell
+```cmd
 ngrok http 8010
 ```
 
-Exemplo:
+Copie a URL https://xxxx.ngrok-free.dev
 
-```
-Forwarding https://SEU-LINK.ngrok-free.dev -> http://localhost:8010
-```
 
 ---
 
-### 5.5️⃣ Erro comum: ERR_NGROK_334
 
-Se aparecer:
 
-```
-ERR_NGROK_334 endpoint is already online
-```
+## 6️⃣ Salvar a URL pública no backend (para o QR ficar público)
 
-**Solução:**
 
-* CTRL + C no terminal do ngrok
-* Rodar novamente:
+1. Abra: 👉 [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
 
-```powershell
-ngrok http 8010
-```
-
----
-
-## 6️⃣ Configurar LINK PÚBLICO dentro do sistema (obrigatório)
-
-Endpoints:
-
-* `POST /api/public-url`
-* `GET /api/public-url`
-
-Swagger:
-👉 [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
+2. Encontre POST /api/public-url
+3. Envie:
 
 ### 6.1️⃣ POST
+Vá em Try it out, cole o link e execute.
 
 ```json
 {
@@ -362,13 +337,18 @@ Swagger:
 }
 ```
 
+Para conferir:
+
 ### 6.2️⃣ GET
+
+1. Encontre GET /api/public-url
+2. Execute.
 
 Confirme se retorna o mesmo link.
 
 ---
 
-## 7️⃣ Gerar QR Code do estabelecimento
+## 8️⃣ Gerar QR Code do estabelecimento
 
 * Local:
   👉 [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
@@ -380,117 +360,58 @@ Confirme se retorna o mesmo link.
 
 ---
 
-## 8️⃣ Fluxo do cliente no celular
+## 8️⃣ IMPORTANTE (para dar certo como no seu PC)
 
-1. Escaneia o QR
-2. Abre `login.html`
-3. Clica **Acompanhar fila**
-4. Vai para `Fila_cliente.html?filaId=...`
-5. Clica **Sair da fila**
-6. Abre `/templates/saiu.html`
+✅ Use SEMPRE o painel pelo NGROK para gerar QR público:
 
-✅ Fluxo correto se tudo isso acontecer.
+Acesse:
 
----
+https://SEU-LINK.ngrok-free.dev/templates/index.html
 
-## 9️⃣ Checklist rápido (quando algo não funciona)
-
-* API ativa?
-  [http://127.0.0.1:8010/docs](http://127.0.0.1:8010/docs)
-
-* Index abre?
-  [http://127.0.0.1:8010/](http://127.0.0.1:8010/)
-
-* QR lista filas?
-  [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
-
-* Ngrok ativo?
-  `ngrok http 8010`
-
-* Link público atualizado?
-  Swagger → POST /api/public-url
-
-* QR regenerado após atualizar link?
-  ✅ Sempre gerar de novo
+Se você abrir o painel pelo localhost, o QR tende a gerar link local.
 
 ---
 
-## 🔟 IMPORTANTE — Não usar Live Server
+## 9️⃣ Fluxo de uso (como “estabelecimento”)
 
-❌ Live Server não garante:
+1. Entrar no painel:
 
-* `/api/...`
-* `/static/...`
-* `/assets/...`
-* templates integrados
+*https://SEU-LINK.ngrok-free.dev/templates/index.html
 
-✅ Use sempre:
+2. Criar conta de estabelecimento (cadastro):
 
-```text
-http://127.0.0.1:8010/
-http://127.0.0.1:8010/templates/Qr_code.html
-```
+*Preencher dados e criar
 
----
+3. Fazer login
 
-## 1️⃣1️⃣ (Opcional) MySQL via .env
+4. Criar uma fila (na página “Criar Fila”)
 
-### 11.1️⃣ Criar `.env.example`
+*A fila é salva no MySQL (tabela fila)
 
-```env
-DB_HOST=localhost
-DB_USER=root
-DB_PASS=root
-DB_NAME=fila_digital
-DB_PORT=3306
-```
+5. Ir em “QR Code”
 
-### 11.2️⃣ Copiar para `.env` e ajustar
+*Ele lista as filas do estabelecimento e gera o QR com link público
 
 ---
+🔟 Teste final no celular (cliente)
 
-### 11.3️⃣ main.py (get_conn)
+1. Abra a página de QR Code no painel e copie o link exibido
 
-```python
-import os
-from dotenv import load_dotenv
-load_dotenv()
+2. Cole no celular (ou escaneie o QR)
 
-def get_conn():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASS", "root"),
-        database=os.getenv("DB_NAME", "fila_digital"),
-        port=int(os.getenv("DB_PORT", "3306")),
-    )
-```
+3. O link deve abrir no formato:
+   *https://SEU-LINK.ngrok-free.dev/templates/login.html?next=/templates/Fila_cliente.html&filaId=123
+   
 
----
 
-## 1️⃣2️⃣ Checklist ngrok (quando o link muda)
+
+## 1️⃣1️⃣ Checklist ngrok (quando o link muda)
 
 1. `ngrok http 8010`
 2. Copiar novo link
 3. Swagger → POST /api/public-url
-4. Reabrir Qr_code.html
-5. Gerar QR novamente
+4. Reabrir index.html
+5. Criar fila e gerar o QR novamente
 
 ---
-
-## ✅ Conclusão
-
-Seguindo este README, qualquer pessoa consegue:
-
-* ✅ Subir MySQL e criar o banco
-* ✅ Instalar dependências
-* ✅ Rodar FastAPI corretamente
-* ✅ Configurar ngrok
-* ✅ Atualizar link público
-* ✅ Gerar QR funcional
-* ✅ Testar tudo no celular
-* ✅ Fluxo completo funcionando
-
----
-
 
