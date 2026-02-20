@@ -348,19 +348,8 @@ Confirme se retorna o mesmo link.
 
 ---
 
-## 8️⃣ Gerar QR Code do estabelecimento
 
-* Local:
-  👉 [http://127.0.0.1:8010/templates/Qr_code.html](http://127.0.0.1:8010/templates/Qr_code.html)
-
-* Público:
-  👉 [https://SEU-LINK.ngrok-free.dev/templates/Qr_code.html](https://SEU-LINK.ngrok-free.dev/templates/Qr_code.html)
-
-🔥 **O QR sempre aponta para o link público (ngrok)**
-
----
-
-## 8️⃣ IMPORTANTE (para dar certo como no seu PC)
+## 7️⃣ IMPORTANTE (para dar certo como no seu PC)
 
 ✅ Use SEMPRE o painel pelo NGROK para gerar QR público:
 
@@ -372,7 +361,7 @@ Se você abrir o painel pelo localhost, o QR tende a gerar link local.
 
 ---
 
-## 9️⃣ Fluxo de uso (como “estabelecimento”)
+## 8️⃣ Fluxo de uso (como “estabelecimento”)
 
 1. Entrar no painel:
 
@@ -393,7 +382,7 @@ Se você abrir o painel pelo localhost, o QR tende a gerar link local.
 *Ele lista as filas do estabelecimento e gera o QR com link público
 
 ---
-🔟 Teste final no celular (cliente)
+9️⃣ Teste final no celular (cliente)
 
 1. Abra a página de QR Code no painel e copie o link exibido
 
@@ -405,7 +394,7 @@ Se você abrir o painel pelo localhost, o QR tende a gerar link local.
 
 
 
-## 1️⃣1️⃣ Checklist ngrok (quando o link muda)
+## 1️⃣1️⃣ Checklist ngrok (o link MUDA toda vez que você reinicia)
 
 1. `ngrok http 8010`
 2. Copiar novo link
