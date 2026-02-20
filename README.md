@@ -57,7 +57,7 @@ net start mysql80
 ---
 
 
-### 2.3️⃣ Criar banco de dados e tabelas
+### 2.2️⃣ Criar banco de dados e tabelas
 
 ⚠️ **Cole EXATAMENTE o script abaixo, sem alterar nada**:
 
