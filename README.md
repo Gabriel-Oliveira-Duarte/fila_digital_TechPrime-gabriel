@@ -365,7 +365,7 @@ Se você abrir o painel pelo localhost, o QR tende a gerar link local.
 
 1. Entrar no painel:
 
-*https://SEU-LINK.ngrok-free.dev/templates/index.html
+https://SEU-LINK.ngrok-free.dev/templates/index.html
 
 2. Criar conta de estabelecimento (cadastro):
 
@@ -382,14 +382,14 @@ Se você abrir o painel pelo localhost, o QR tende a gerar link local.
 *Ele lista as filas do estabelecimento e gera o QR com link público
 
 ---
-9️⃣ Teste final no celular (cliente)
+## 9️⃣ Teste final no celular (cliente)
 
 1. Abra a página de QR Code no painel e copie o link exibido
 
 2. Cole no celular (ou escaneie o QR)
 
 3. O link deve abrir no formato:
-   *https://SEU-LINK.ngrok-free.dev/templates/login.html?next=/templates/Fila_cliente.html&filaId=123
+   https://SEU-LINK.ngrok-free.dev/templates/login.html?next=/templates/Fila_cliente.html&filaId=123
    
 
 
