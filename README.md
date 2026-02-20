@@ -205,7 +205,7 @@ CREATE TABLE qr_code (
 
 ---
 
-### 📌 Observação importante (MySQL)
+##📌 Observação importante (MySQL)
 
 * Observação: no main.py o acesso ao MySQL está como user=root e password=root.
 Se no seu PC for diferente, altere no get_conn().
