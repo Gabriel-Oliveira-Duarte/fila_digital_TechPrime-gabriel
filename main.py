@@ -40,9 +40,7 @@ print("API INICIANDO...")
 
 
 
-# =====================================================
-# ✅ CORS
-# =====================================================
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -51,9 +49,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# =====================================================
-# ✅ NGROK: remover página "Visite o site"
-# =====================================================
 
 
 class NgrokSkipBrowserWarningMiddleware(BaseHTTPMiddleware):
@@ -65,9 +60,6 @@ class NgrokSkipBrowserWarningMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(NgrokSkipBrowserWarningMiddleware)
 
-# =====================================================
-# ✅ WEBSOCKET MANAGER
-# =====================================================
 
 
 class ConnectionManager:
@@ -123,20 +115,16 @@ async def ws_fila(websocket: WebSocket, fila_id: int):
     await manager.connect(room, websocket)
     try:
         while True:
-            # ping do front (mantém vivo)
             await websocket.receive_text()
     except WebSocketDisconnect:
         await manager.disconnect(room, websocket)
 
-# =====================================================
-# PATHS / STATIC
-# =====================================================
+
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
 TEMPLATES_DIR = BASE_DIR / "templates"
 ASSETS_DIR = BASE_DIR / "assets"
 
-# ✅ use paths absolutos (evita bug de diretório ao rodar)
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 if TEMPLATES_DIR.exists():
@@ -154,7 +142,6 @@ def home():
             status_code=404, detail="index.html não encontrado em /templates")
     return FileResponse(str(file_path), media_type="text/html", headers={"ngrok-skip-browser-warning": "1"})
 
-# ✅✅ rota estável pro seu login cnpj.html
 
 
 @app.get("/cnpj")
@@ -165,21 +152,16 @@ def cnpj_page():
             status_code=404, detail="cnpj.html não encontrado em /templates")
     return FileResponse(str(file_path), media_type="text/html", headers={"ngrok-skip-browser-warning": "1"})
 
-# ✅✅ rota estável pro dashboard (mantém /dashboard e também mantém /templates funcionando via mount)
 
 
 @app.get("/dashboard")
 def dashboard_page():
-    # ⚠️ seu arquivo é templates/dashboard.html (minúsculo)
     file_path = TEMPLATES_DIR / "dashboard.html"
     if not file_path.exists():
         raise HTTPException(
             status_code=404, detail="dashboard.html não encontrado em /templates")
     return FileResponse(str(file_path), media_type="text/html", headers={"ngrok-skip-browser-warning": "1"})
 
-# =====================================================
-# MYSQL
-# =====================================================
 
 
 def get_conn():
@@ -200,7 +182,6 @@ def hash_pass(p: str) -> str:
     return hashlib.sha256((p + SECRET_KEY).encode()).hexdigest()
 
 def hash_code(code: str) -> str:
-    # reusa seu SECRET_KEY/ hash_pass pra manter padrão
     return hashlib.sha256((code.strip() + SECRET_KEY).encode()).hexdigest()
 
 def send_reset_email(to_email: str, code: str) -> bool:
@@ -233,14 +214,12 @@ def send_reset_email(to_email: str, code: str) -> bool:
     )
 
     try:
-        # Porta 465 = SSL direto
         if smtp_port == 465:
             context = ssl.create_default_context()
             with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=20, context=context) as server:
                 server.login(smtp_user, smtp_pass)
                 server.send_message(msg)
 
-        # Porta 587 = STARTTLS
         elif smtp_port == 587:
             with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as server:
                 server.ehlo()
@@ -249,7 +228,6 @@ def send_reset_email(to_email: str, code: str) -> bool:
                 server.login(smtp_user, smtp_pass)
                 server.send_message(msg)
 
-        # Outras portas = tenta sem TLS automático
         else:
             with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as server:
                 server.ehlo()
@@ -273,9 +251,6 @@ def send_reset_email(to_email: str, code: str) -> bool:
         print("[SMTP] ❌ Falha geral SMTP:", repr(e))
         return False
 
-# =====================================================
-# HELPERS
-# =====================================================
 
 
 def normalize_text_upper_no_accents(s: Optional[str]) -> Optional[str]:
@@ -421,7 +396,6 @@ def haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     return R * c
 
-# 👇 COLE AQUI (logo abaixo)
 def coord_invalida(lat, lon):
     try:
         if lat is None or lon is None:
@@ -430,11 +404,9 @@ def coord_invalida(lat, lon):
         lat = float(lat)
         lon = float(lon)
 
-        # inválido se for NaN
         if math.isnan(lat) or math.isnan(lon):
             return True
 
-        # inválido se for 0,0
         if lat == 0.0 and lon == 0.0:
             return True
 
@@ -494,26 +466,22 @@ def obter_coordenadas(endereco: str):
     if not endereco:
         return None, None
 
-    # 1) completo
     lat, lon = consulta(endereco)
     if lat is not None:
         return lat, lon
 
-    # 2) sem acentos
     q2 = sem_acentos(endereco)
     if q2 != endereco:
         lat, lon = consulta(q2)
         if lat is not None:
             return lat, lon
 
-    # 3) remove complemento entre parênteses
     q3 = endereco.replace("(", "").replace(")", "")
     if q3 != endereco:
         lat, lon = consulta(q3)
         if lat is not None:
             return lat, lon
 
-    # 4) tenta sem bairro
     partes = [p.strip() for p in endereco.split(",")]
     if len(partes) >= 5:
         q4 = f"{partes[0]}, {partes[1]}, {partes[-3]}, {partes[-2]}, Brasil"
@@ -523,12 +491,10 @@ def obter_coordenadas(endereco: str):
 
     return None, None
 
-    # ✅ Tentativa 1: completo
     lat, lon = consulta(endereco)
     if lat is not None:
         return lat, lon
 
-    # ✅ Tentativa 2: remove bairro (parte depois do "-")
     try:
         if " - " in endereco:
             partes = endereco.split(" - ")
@@ -540,7 +506,6 @@ def obter_coordenadas(endereco: str):
     except:
         pass
 
-    # ✅ Tentativa 3: só "Cidade - UF, Brasil"
     try:
         if "," in endereco:
             tail = endereco.split(",")[-2].strip()
@@ -553,9 +518,6 @@ def obter_coordenadas(endereco: str):
 
     return None, None
 
-# =====================================================
-# MODELS
-# =====================================================
 
 
 class EstabelecimentoCreate(BaseModel):
@@ -643,9 +605,6 @@ class ResetPasswordBody(BaseModel):
     email: EmailStr
     code: str
     new_password: str
-# =====================================================
-# ESTABELECIMENTO
-# =====================================================
 
 
 @app.post("/api/estabelecimentos")
@@ -662,7 +621,6 @@ def criar_estabelecimento(body: EstabelecimentoCreate):
         lat = body.latitude if body.latitude is not None else None
         lon = body.longitude if body.longitude is not None else None
 
-        # (mantido igual ao seu)
         raio_alerta_db = 0
 
         cur.execute("""
@@ -731,7 +689,6 @@ def salvar_endereco_estabelecimento(estab_id: int, body: EnderecoBody):
         if estab_id <= 0:
             raise HTTPException(status_code=400, detail="ID do estabelecimento inválido.")
 
-        # Endereço completo para geocodificação
         logradouro_limpo = (logradouro or "").strip()
         logradouro_limpo = logradouro_limpo.replace("R.", "Rua ").replace("Av.", "Avenida ").replace("N°", "").strip()
 
@@ -762,7 +719,6 @@ def salvar_endereco_estabelecimento(estab_id: int, body: EnderecoBody):
         conn = get_conn()
         cur = conn.cursor(dictionary=True)
 
-        # Confirma se o estabelecimento existe
         cur.execute("""
             SELECT idEstabelecimento
             FROM estabelecimento
@@ -776,7 +732,6 @@ def salvar_endereco_estabelecimento(estab_id: int, body: EnderecoBody):
 
         cur.close()
 
-        # Atualiza o estabelecimento
         cur_estab = conn.cursor()
         cur_estab.execute("""
             UPDATE estabelecimento
@@ -801,8 +756,8 @@ def salvar_endereco_estabelecimento(estab_id: int, body: EnderecoBody):
             bairro,
             cidade_end,
             uf,
-            cidade_end,   # compatibilidade com campo antigo
-            uf,           # compatibilidade com campo antigo
+            cidade_end,   
+            uf,           
             lat,
             lon,
             estab_id
@@ -810,7 +765,7 @@ def salvar_endereco_estabelecimento(estab_id: int, body: EnderecoBody):
         conn.commit()
         cur_estab.close()
 
-        # Sincroniza todas as filas já existentes desse estabelecimento
+        
         cur_filas = conn.cursor()
         cur_filas.execute("""
             UPDATE fila
@@ -1032,7 +987,6 @@ def forgot_password(body: ForgotPasswordBody):
     conn = get_conn()
     cur = conn.cursor(dictionary=True)
     
-    # não vazar se existe ou não: retorna ok de qualquer jeito
     cur.execute("SELECT idEstabelecimento FROM estabelecimento WHERE email=%s LIMIT 1", (email,))
     row = cur.fetchone()
     if not row:
@@ -1043,7 +997,6 @@ def forgot_password(body: ForgotPasswordBody):
     code_hash = hash_code(code)
     expires_at = (datetime.now() + timedelta(minutes=15)).strftime("%Y-%m-%d %H:%M:%S")
 
-    # invalida resets antigos não usados
     cur.execute("""
         UPDATE password_reset SET used=1
         WHERE email=%s AND used=0
@@ -1057,8 +1010,6 @@ def forgot_password(body: ForgotPasswordBody):
     conn.commit()
     cur.close(); conn.close()
 
-    # ✅ AQUI é o que estava faltando:
-    # envia email de recuperação
     try:
         ok = send_reset_email(email, code)
 
@@ -1068,7 +1019,6 @@ def forgot_password(body: ForgotPasswordBody):
     except Exception as e:
         print("[SMTP] Erro inesperado ao enviar e-mail:", repr(e))
 
-    # por segurança sempre retorna ok
     return {"ok": True}
       
 
@@ -1115,29 +1065,22 @@ def reset_password(body: ResetPasswordBody):
         cur.close(); conn.close()
         raise HTTPException(status_code=400, detail="Código incorreto.")
 
-    # atualiza senha
     cur.execute("""
         UPDATE estabelecimento
         SET senha=%s
         WHERE email=%s
     """, (hash_pass(new_password), email))
 
-    # marca reset como usado
     cur.execute("UPDATE password_reset SET used=1 WHERE id=%s", (pr["id"],))
     conn.commit()
     cur.close(); conn.close()
 
     return {"ok": True}
-    
-# =====================================================
-# FILAS
-# =====================================================
 
 
 @app.get("/api/filas")
 def listar_filas(
     estabelecimento_id: Optional[int] = Query(default=None),
-    # ABERTA | FECHADA | EXCLUIDA | None (todas)
     status: Optional[str] = Query(default=None),
 ):
     try:
@@ -1217,7 +1160,6 @@ async def criar_fila(body: FilaCreate):
         if tempo <= 0:
             raise HTTPException(status_code=400, detail="tempo_medio_min inválido")
 
-        # ✅ pega geo do estabelecimento (vem do login/endereço)
         conn = get_conn()
         cur = conn.cursor(dictionary=True)
         cur.execute("""
@@ -1236,14 +1178,12 @@ async def criar_fila(body: FilaCreate):
         lat = est.get("latitude")
         lon = est.get("longitude")
 
-        # ✅ valida coordenadas do estabelecimento (AGORA INDENTADO CERTO)
         if coord_invalida(lat, lon):
             raise HTTPException(
                 status_code=400,
                 detail="Estabelecimento sem localização válida. Complete o endereço no login para gerar latitude/longitude."
             )
 
-        # ✅ insere fila (endereco pode ser NULL)
         conn = get_conn()
         cur = conn.cursor()
         cur.execute("""
@@ -1255,7 +1195,7 @@ async def criar_fila(body: FilaCreate):
             status,
             datetime.now(),
             body.estabelecimento_id,
-            body.endereco,  # pode ser None
+            body.endereco,  
             float(lat),
             float(lon),
             float(raio_km),
@@ -1324,14 +1264,12 @@ async def fechar_fila(fila_id: int):
 
         cur2 = conn.cursor()
 
-        # fecha a fila
         cur2.execute("""
             UPDATE fila
             SET status='FECHADA', data_fechamento=%s
             WHERE idFila=%s
         """, (datetime.now(), fila_id))
 
-        # remove todos os clientes ainda ativos nela
         try:
             cur2.execute("""
                 UPDATE fila_cliente
@@ -1385,14 +1323,12 @@ async def excluir_fila(fila_id: int):
 
         cur2 = conn.cursor()
 
-        # exclui logicamente a fila
         cur2.execute("""
             UPDATE fila
             SET status='EXCLUIDA', data_fechamento=%s
             WHERE idFila=%s
         """, (datetime.now(), fila_id))
 
-        # remove todos os clientes ainda ativos nela
         try:
             cur2.execute("""
                 UPDATE fila_cliente
@@ -1440,7 +1376,6 @@ def listar_clientes_fila_ao_vivo(fila_id: int):
         conn = get_conn()
         cur = conn.cursor(dictionary=True)
 
-        # tempo médio da fila (min)
         tempo_medio = calcular_tempo_medio_fila_min(conn, fila_id, padrao=12)
 
         cur.execute("""
@@ -1524,9 +1459,7 @@ def listar_clientes_fila_ao_vivo(fila_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# =====================================================
-# PUBLIC URL (NGROK)
-# =====================================================
+
 PUBLIC_BASE_URL = ""
 
 
@@ -1545,9 +1478,6 @@ def set_public_url(body: PublicUrlBody):
     PUBLIC_BASE_URL = url
     return {"ok": True, "public_url": PUBLIC_BASE_URL}
 
-# =====================================================
-# CLIENTE ENTRAR NA FILA (SEM TELEFONE)
-# =====================================================
 
 @app.post("/api/fila/{fila_id}/entrar")
 @app.post("/api/filas/{fila_id}/entrar")
@@ -1593,7 +1523,6 @@ async def entrar_na_fila(fila_id: int, body: EntrarFilaBody):
         conn = get_conn()
         cur = conn.cursor(dictionary=True)
 
-        # busca fila + estabelecimento para validar situação e raio
         cur.execute("""
             SELECT
                 f.idFila,
@@ -1626,11 +1555,9 @@ async def entrar_na_fila(fila_id: int, body: EntrarFilaBody):
             conn.close()
             raise HTTPException(status_code=400, detail="Fila está FECHADA.")
 
-        # usa localização da fila; se não tiver, usa a do estabelecimento
         ref_lat = fila["latitude"] if fila["latitude"] is not None else fila["estabelecimento_latitude"]
         ref_lng = fila["longitude"] if fila["longitude"] is not None else fila["estabelecimento_longitude"]
 
-        # usa raio_km da fila; se não tiver, usa raio_alerta do estabelecimento
         if fila["raio_km"] is not None:
             raio_m = float(fila["raio_km"]) * 1000.0
         elif fila["estabelecimento_raio_alerta"] is not None:
@@ -1650,7 +1577,6 @@ async def entrar_na_fila(fila_id: int, body: EntrarFilaBody):
 
         cur.close()
 
-        # 1) cria cliente com localização atual
         cur_cliente = conn.cursor()
         cur_cliente.execute("""
             INSERT INTO cliente
@@ -1662,7 +1588,6 @@ async def entrar_na_fila(fila_id: int, body: EntrarFilaBody):
         cliente_id = int(cur_cliente.lastrowid)
         cur_cliente.close()
 
-        # 2) salva histórico em posicao_gps
         cur_gps = conn.cursor()
         cur_gps.execute("""
             INSERT INTO posicao_gps
@@ -1673,7 +1598,6 @@ async def entrar_na_fila(fila_id: int, body: EntrarFilaBody):
         conn.commit()
         cur_gps.close()
 
-        # 3) registra entrada na fila
         senha_codigo = gerar_senha_codigo()
 
         cur_fc = conn.cursor()
@@ -1753,9 +1677,7 @@ async def entrar_na_fila(fila_id: int, body: EntrarFilaBody):
                 pass
         raise HTTPException(status_code=500, detail=str(e))
     
-# =====================================================
-# SAIR DA FILA
-# =====================================================
+
 
 @app.post("/api/fila/{fila_id}/cliente/{cliente_id}/sair")
 @app.post("/api/filas/{fila_id}/cliente/{cliente_id}/sair")
@@ -1781,7 +1703,6 @@ async def sair_da_fila(fila_id: int, cliente_id: int, origem: str = Query(defaul
 
         fila_cliente_id = int(row["idFilaCliente"])
 
-        # pega nome do cliente + nome da fila (pro toast)
         cur3 = conn.cursor(dictionary=True)
         cur3.execute("""
             SELECT c.nome AS cliente_nome, f.nome AS fila_nome
@@ -1794,7 +1715,6 @@ async def sair_da_fila(fila_id: int, cliente_id: int, origem: str = Query(defaul
         info = cur3.fetchone() or {}
         cur3.close()
 
-        # ✅ UPDATE robusto: tenta com data_fim, se não existir cai pro simples
         cur2 = conn.cursor()
         try:
             cur2.execute("""
@@ -1812,7 +1732,6 @@ async def sair_da_fila(fila_id: int, cliente_id: int, origem: str = Query(defaul
         conn.commit()
         cur2.close()
 
-        # ✅ dispara evento que o painel escuta
         await notify_fila_update(fila_id, "CLIENTE_SAIU", {
             "cliente_id": cliente_id,
             "fila_cliente_id": fila_cliente_id,
@@ -1829,9 +1748,7 @@ async def sair_da_fila(fila_id: int, cliente_id: int, origem: str = Query(defaul
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# =====================================================
-# STATUS DO CLIENTE (✅ POSIÇÃO CORRETA) + ✅ RAIO DA FILA
-# =====================================================
+
 
 @app.get("/api/fila/{fila_id}/cliente/{cliente_id}/status")
 @app.get("/api/filas/{fila_id}/cliente/{cliente_id}/status")
@@ -1841,7 +1758,6 @@ async def status_cliente_fila(fila_id: int, cliente_id: int):
         conn = get_conn()
         cur = conn.cursor(dictionary=True)
 
-        # 1) verifica a fila primeiro
         cur.execute("""
             SELECT idFila, status, nome, raio_km
             FROM fila
@@ -1876,7 +1792,6 @@ async def status_cliente_fila(fila_id: int, cliente_id: int):
                 "motivo": "fila_excluida"
             }
 
-        # 2) se a fila estiver ativa, procura o cliente nela
         cur.execute("""
             SELECT
                 fc.idFilaCliente,
@@ -1995,9 +1910,7 @@ async def fetch_fila_info(fila_id: int):
         if not row:
             raise HTTPException(status_code=404, detail="Fila não encontrada.")
 
-        # PRIORIDADE DAS COORDENADAS
-        # 1) fila
-        # 2) estabelecimento
+
         lat = None
         lng = None
         origem_geo = None
@@ -2011,11 +1924,7 @@ async def fetch_fila_info(fila_id: int):
             lng = float(row["estabelecimento_longitude"])
             origem_geo = "estabelecimento"
 
-        # =====================================================
-        # PRIORIDADE DO RAIO
-        # 1) fila.raio_km -> converte para metros
-        # 2) estabelecimento.raio_alerta
-        # =====================================================
+
         raio_m = None
         origem_raio = None
 
@@ -2026,7 +1935,6 @@ async def fetch_fila_info(fila_id: int):
             raio_m = int(row["estabelecimento_raio_alerta"])
             origem_raio = "estabelecimento.raio_alerta"
 
-        # endereço amigável
         endereco_partes = [
             (row.get("logradouro") or "").strip(),
             (row.get("numero") or "").strip(),
@@ -2072,9 +1980,6 @@ async def fetch_fila_info(fila_id: int):
                 pass
         raise HTTPException(status_code=500, detail=str(e))
 
-# =====================================================
-# ATENDIMENTO
-# =====================================================
 
 
 def _fila_get_status(conn, fila_id: int):
@@ -2087,7 +1992,6 @@ def _fila_get_status(conn, fila_id: int):
         cur.close()
         raise HTTPException(status_code=404, detail="Fila não encontrada")
 
-    # Cliente em atendimento agora
     cur.execute("""
         SELECT
             fc.idFilaCliente,
@@ -2102,7 +2006,6 @@ def _fila_get_status(conn, fila_id: int):
     """, (fila_id,))
     atual = cur.fetchone()
 
-    # Total aguardando/chamado
     cur.execute("""
         SELECT COUNT(*) AS total
         FROM fila_cliente
@@ -2111,9 +2014,7 @@ def _fila_get_status(conn, fila_id: int):
     """, (fila_id,))
     aguardando_total = int((cur.fetchone() or {}).get("total", 0))
 
-    # Lista completa da espera:
-    # 1º = próximo
-    # resto = demais clientes
+
     cur.execute("""
         SELECT
             fc.idFilaCliente,
@@ -2199,7 +2100,6 @@ async def atendimento_chamar(fila_id: int):
             raise HTTPException(
                 status_code=400, detail="Já existe um cliente em atendimento.")
 
-        # ✅✅ CORRIGIDO: pega CHAMADO primeiro, depois AGUARDANDO
         cur.execute("""
             SELECT fc.idFilaCliente, fc.cliente_idCliente, c.nome, fc.status
             FROM fila_cliente fc
@@ -2404,9 +2304,6 @@ async def atendimento_pular(fila_id: int):
     finally:
         conn.close()
 
-# =====================================================
-# DASHBOARD (VISÃO GERAL)
-# =====================================================
 
 
 @app.get("/api/dashboard/resumo")
@@ -2430,7 +2327,6 @@ def dashboard_resumo(estabelecimento_id: int = Query(...)):
             conn.close()
             raise HTTPException(status_code=404, detail="Estabelecimento não encontrado")
 
-        # ✅ Totais (ABERTAS) + ✅ Cancelados/Concluídos (histórico do estabelecimento)
         cur.execute("""
             SELECT
               (SELECT COUNT(*)
@@ -2483,7 +2379,6 @@ def dashboard_resumo(estabelecimento_id: int = Query(...)):
 
         totais = cur.fetchone() or {}
 
-        # ✅ Próximo (ABERTAS)
         cur.execute("""
             SELECT
               fc.idFilaCliente,
@@ -2503,7 +2398,6 @@ def dashboard_resumo(estabelecimento_id: int = Query(...)):
         """, (estabelecimento_id,))
         prox = cur.fetchone()
 
-        # ✅ Tempo médio geral das filas abertas do estabelecimento
         cur.execute("""
             SELECT idFila
             FROM fila
@@ -2627,9 +2521,7 @@ async def dashboard_chamar_proximo(body: ChamarProximoBody):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# =====================================================
-# INFO FILA + GEO (✅ RAIO DA FILA)
-# =====================================================
+
 
 
 async def fetch_fila_info(fila_id: int):
@@ -2665,11 +2557,9 @@ async def fetch_fila_info(fila_id: int):
         if not row:
             raise HTTPException(status_code=404, detail="Fila não encontrada.")
 
-        # prioriza coordenadas da fila; se não tiver, usa as do estabelecimento
         lat = row["latitude"] if row["latitude"] is not None else row["estabelecimento_latitude"]
         lng = row["longitude"] if row["longitude"] is not None else row["estabelecimento_longitude"]
 
-        # prioriza raio da fila (km -> m); se não tiver, usa raio_alerta do estabelecimento
         if row["raio_km"] is not None:
             raio_m = int(float(row["raio_km"]) * 1000)
         elif row["estabelecimento_raio_alerta"] is not None:
@@ -2730,7 +2620,6 @@ async def atualizar_geo_cliente(fila_id: int, cliente_id: int, body: GeoUpdateBo
             conn.close()
             raise HTTPException(status_code=404, detail="Fila não encontrada.")
 
-        # prioridade: coordenadas da fila; se não houver, usa estabelecimento
         if row["fila_lat"] is not None and row["fila_lng"] is not None:
             ref_lat = float(row["fila_lat"])
             ref_lng = float(row["fila_lng"])
@@ -2816,9 +2705,7 @@ async def atualizar_geo_cliente(fila_id: int, cliente_id: int, body: GeoUpdateBo
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# =====================================================
-# MAIN
-# =====================================================
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8010, reload=True)
@@ -2844,7 +2731,6 @@ def atualizar_localizacao(data: ClienteLocalizacaoBody):
 
         conn = get_conn()
 
-        # 1) Atualiza localização atual do cliente
         cur = conn.cursor()
         cur.execute("""
             UPDATE cliente
@@ -2862,7 +2748,6 @@ def atualizar_localizacao(data: ClienteLocalizacaoBody):
 
         cur.close()
 
-        # 2) Mantém posicao_gps sincronizada (1 registro por cliente)
         cur_check = conn.cursor(dictionary=True)
         cur_check.execute("""
             SELECT idPosicaoGPS
