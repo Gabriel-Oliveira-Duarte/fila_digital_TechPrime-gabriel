@@ -41,14 +41,14 @@ def get_conn():
         host="localhost",
         user="root",
         password="root",
-        database="fila_digital",   # <-- seu schema
+        database="fila_digital",   
     )
 
 class EstabelecimentoCreate(BaseModel):
     nome: str
     cidade: str | None = None
     cnpj: str | None = None
-    categoria: str | None = None  # ou Enum
+    categoria: str | None = None  
     estado: str | None = None
     telefone: str | None = None
     email: EmailStr
