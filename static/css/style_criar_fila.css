@@ -21,14 +21,12 @@ body{
   color:var(--text);
 }
 
-/* Layout base (sidebar + content) */
 .app{
   display:grid;
   grid-template-columns:280px 1fr;
   min-height:100vh;
 }
 
-/* Sidebar */
 .sidebar{
   background:linear-gradient(180deg, #0e0f12 0%, #0a0b0d 100%);
   border-right:1px solid var(--border);
@@ -84,10 +82,8 @@ body{
   text-align:center;
 }
 
-/* Content */
 .content{display:flex;flex-direction:column;min-width:0}
 
-/* Topbar */
 .topbar{
   height:64px;
   display:flex;align-items:center;justify-content:space-between;
@@ -126,7 +122,6 @@ body{
 .icon-btn i{font-size:18px;opacity:.9}
 .mobile-top{display:none;align-items:center;gap:10px}
 
-/* Backdrop mobile */
 .backdrop{
   position:fixed;inset:0;
   background:rgba(0,0,0,.55);
@@ -135,7 +130,6 @@ body{
 }
 .backdrop.show{display:block}
 
-/* Page */
 .page{
   padding:22px;
   max-width:1280px;
@@ -144,9 +138,8 @@ body{
 h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 .subtitle{color:var(--muted2);margin:0 0 18px;font-size:14px}
 
-/* ==== Criar Fila (conteúdo) ==== */
 .grid-create{
-  display:block;          /* vira 1 coluna */
+  display:block;         
 }
 
 .stack{
@@ -154,7 +147,7 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   flex-direction:column;
   gap:14px;
   width:100%;
-  max-width: 980px;       /* deixa igual sua print (não fica esticado demais) */
+  max-width: 980px;      
 }
 
 .panel{
@@ -241,7 +234,6 @@ input:focus, textarea:focus{
 .toggle-line{display:flex;align-items:center;gap:10px;padding-top:4px}
 .toggle-text{color:rgba(255,255,255,.75);font-size:12px;font-weight:600}
 
-/* Switch */
 .switch{position:relative;display:inline-block;width:42px;height:24px}
 .switch input{display:none}
 .slider{
@@ -269,7 +261,6 @@ input:focus, textarea:focus{
   background:var(--accent);
 }
 
-/* Lista de filas (cards) */
 .queue-item{
   display:flex;
   align-items:flex-start;
@@ -342,14 +333,8 @@ input:focus, textarea:focus{
   h1{font-size:28px}
 }
 
-/* Tema claro/escuro via data-theme no <html> */
 :root[data-theme="dark"] { color-scheme: dark; }
 :root[data-theme="light"] { color-scheme: light; }
-
-/* =========================================================
-   ✅ PATCH TEMA CLARO — Criar Fila (IDÊNTICO ao Atendimento)
-   Cole no FINAL do style_criar_fila.css (já está aqui)
-========================================================= */
 
 :root[data-theme="light"]{
   --bg:#f6f7fb;
@@ -363,13 +348,11 @@ input:focus, textarea:focus{
   --success:#2bd576;
 }
 
-/* Base */
 :root[data-theme="light"] body{
   background: var(--bg) !important;
   color: var(--text) !important;
 }
 
-/* Sidebar/topbar */
 :root[data-theme="light"] .sidebar{
   background: #ffffff !important;
   border-right-color: var(--stroke) !important;
@@ -387,7 +370,6 @@ input:focus, textarea:focus{
   color: var(--muted2) !important;
 }
 
-/* Links nav */
 :root[data-theme="light"] .nav a{
   color: var(--text) !important;
 }
@@ -403,7 +385,6 @@ input:focus, textarea:focus{
   border-top-color: rgba(0,0,0,.08) !important;
 }
 
-/* Botões do topo */
 :root[data-theme="light"] .icon-btn{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -414,7 +395,6 @@ input:focus, textarea:focus{
   opacity: .85 !important;
 }
 
-/* Títulos */
 :root[data-theme="light"] h1,
 :root[data-theme="light"] h2,
 :root[data-theme="light"] h3{
@@ -424,7 +404,6 @@ input:focus, textarea:focus{
   color: var(--muted2) !important;
 }
 
-/* Painéis: força legibilidade interna (igual Atendimento) */
 :root[data-theme="light"] .panel{
   background: #ffffff !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -435,11 +414,9 @@ input:focus, textarea:focus{
   color: var(--text) !important;
 }
 
-/* preserva cores especiais */
 :root[data-theme="light"] .accent{ color: #ff7a00 !important; }
 :root[data-theme="light"] .dot{ box-shadow: 0 0 0 4px rgba(43,213,118,.15) !important; }
 
-/* Labels/muted */
 :root[data-theme="light"] .muted,
 :root[data-theme="light"] .toggle-text,
 :root[data-theme="light"] .range-scale{
@@ -449,7 +426,6 @@ input:focus, textarea:focus{
   color: rgba(18,19,24,.78) !important;
 }
 
-/* Inputs/textarea (sem branco ilegível) */
 :root[data-theme="light"] input,
 :root[data-theme="light"] textarea{
   background: #ffffff !important;
@@ -466,12 +442,10 @@ input:focus, textarea:focus{
   box-shadow: 0 0 0 3px rgba(255,122,0,.14) !important;
 }
 
-/* Range */
 :root[data-theme="light"] .range{
   background: rgba(0,0,0,.10) !important;
 }
 
-/* Queue cards (lista) */
 :root[data-theme="light"] .queue-item{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.08) !important;
@@ -480,30 +454,22 @@ input:focus, textarea:focus{
   color: var(--muted) !important;
 }
 
-/* Badge */
 :root[data-theme="light"] .badge-on{
   color: rgba(120,60,0,.95) !important;
   background: rgba(255,122,0,.14) !important;
   border-color: rgba(255,122,0,.28) !important;
 }
 
-/* Botão primário (igual Atendimento) */
 :root[data-theme="light"] .btn-primary{
   background: #ff7a00 !important;
   border-color: rgba(255,122,0,.55) !important;
   color: #0b0c0e !important;
 }
 
-/* Switch */
 :root[data-theme="light"] .slider{
   background: rgba(0,0,0,.08) !important;
   border-color: rgba(0,0,0,.10) !important;
 }
-
-/* =========================================================
-   ✅ FIX DEFINITIVO DE LEGIBILIDADE — LIGHT (Criar Fila)
-   Cole como ÚLTIMA coisa do style_criar_fila.css
-========================================================= */
 
 :root[data-theme="light"]{
   --bg:#f6f7fb;
@@ -513,13 +479,11 @@ input:focus, textarea:focus{
   --stroke: rgba(0,0,0,.12);
 }
 
-/* Base */
 :root[data-theme="light"] body{
   background: var(--bg) !important;
   color: var(--text) !important;
 }
 
-/* Sidebar/topbar (mesmo padrão do Atendimento) */
 :root[data-theme="light"] .sidebar{
   background: #ffffff !important;
   border-right-color: var(--stroke) !important;
@@ -552,7 +516,6 @@ input:focus, textarea:focus{
   border-top-color: rgba(0,0,0,.08) !important;
 }
 
-/* ÍCONES DO TOPO (padrão correto) */
 :root[data-theme="light"] .icon-btn{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -567,7 +530,6 @@ input:focus, textarea:focus{
   opacity: .85 !important;
 }
 
-/* Títulos gerais */
 :root[data-theme="light"] .page h1,
 :root[data-theme="light"] .page h2,
 :root[data-theme="light"] .page h3{
@@ -577,7 +539,6 @@ input:focus, textarea:focus{
   color: var(--muted2) !important;
 }
 
-/* PANELS (o principal do bug) */
 :root[data-theme="light"] .panel{
   background: #ffffff !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -592,7 +553,6 @@ input:focus, textarea:focus{
   font-weight: 700 !important;
 }
 
-/* Labels / muted / textos auxiliares */
 :root[data-theme="light"] .field label{
   color: rgba(18,19,24,.78) !important;
 }
@@ -605,7 +565,6 @@ input:focus, textarea:focus{
   color: rgba(18,19,24,.45) !important;
 }
 
-/* Inputs / textarea */
 :root[data-theme="light"] input,
 :root[data-theme="light"] textarea{
   background: #ffffff !important;
@@ -622,7 +581,6 @@ input:focus, textarea:focus{
   box-shadow: 0 0 0 3px rgba(255,122,0,.14) !important;
 }
 
-/* Range */
 :root[data-theme="light"] .range{
   background: rgba(0,0,0,.10) !important;
 }
@@ -630,7 +588,6 @@ input:focus, textarea:focus{
   color: #ff7a00 !important;
 }
 
-/* Lista de filas */
 :root[data-theme="light"] .queue-item{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.08) !important;
@@ -642,23 +599,16 @@ input:focus, textarea:focus{
   color: var(--muted) !important;
 }
 
-/* Badge */
 :root[data-theme="light"] .badge-on{
   color: rgba(120,60,0,.95) !important;
   background: rgba(255,122,0,.14) !important;
   border-color: rgba(255,122,0,.28) !important;
 }
 
-/* Switch */
 :root[data-theme="light"] .slider{
   background: rgba(0,0,0,.08) !important;
   border-color: rgba(0,0,0,.10) !important;
 }
-
-/* =========================================================
-   🔥 PATCH HARD (LIGHT) — força legibilidade dentro dos panels
-   Cole COMO ÚLTIMA coisa do style_criar_fila.css
-========================================================= */
 
 :root[data-theme="light"]{
   --bg:#f6f7fb !important;
@@ -668,13 +618,11 @@ input:focus, textarea:focus{
   --stroke: rgba(0,0,0,.12) !important;
 }
 
-/* base */
 :root[data-theme="light"] body{
   background: var(--bg) !important;
   color: var(--text) !important;
 }
 
-/* sidebar/topbar */
 :root[data-theme="light"] .sidebar{
   background: #fff !important;
   border-right: 1px solid var(--stroke) !important;
@@ -700,7 +648,6 @@ input:focus, textarea:focus{
   opacity:.75 !important;
 }
 
-/* ícones do topo */
 :root[data-theme="light"] .icon-btn{
   background: rgba(0,0,0,.03) !important;
   border: 1px solid rgba(0,0,0,.10) !important;
@@ -711,7 +658,6 @@ input:focus, textarea:focus{
   opacity:.85 !important;
 }
 
-/* títulos */
 :root[data-theme="light"] .page h1,
 :root[data-theme="light"] .page h2,
 :root[data-theme="light"] .page h3{
@@ -721,7 +667,6 @@ input:focus, textarea:focus{
   color: var(--muted2) !important;
 }
 
-/* ✅ o pulo do gato: força tudo dentro do panel a ficar escuro */
 :root[data-theme="light"] .panel{
   background: #fff !important;
   border: 1px solid rgba(0,0,0,.10) !important;
@@ -729,10 +674,9 @@ input:focus, textarea:focus{
   color: var(--text) !important;
 }
 :root[data-theme="light"] .panel *{
-  color: var(--text) !important;  /* <- isso resolve “apagado” na marra */
+  color: var(--text) !important; 
 }
 
-/* re-muta coisas que devem ser muted */
 :root[data-theme="light"] .panel .muted,
 :root[data-theme="light"] .panel .range-scale,
 :root[data-theme="light"] .panel .toggle-text{
@@ -743,7 +687,6 @@ input:focus, textarea:focus{
   color: var(--muted2) !important;
 }
 
-/* labels / required */
 :root[data-theme="light"] .field label{
   color: rgba(18,19,24,.78) !important;
 }
@@ -751,7 +694,6 @@ input:focus, textarea:focus{
   color: rgba(18,19,24,.45) !important;
 }
 
-/* inputs/textarea */
 :root[data-theme="light"] input,
 :root[data-theme="light"] textarea{
   background: #fff !important;
@@ -763,7 +705,6 @@ input:focus, textarea:focus{
   color: rgba(18,19,24,.45) !important;
 }
 
-/* lista de filas */
 :root[data-theme="light"] .queue-item{
   background: rgba(0,0,0,.03) !important;
   border: 1px solid rgba(0,0,0,.08) !important;
@@ -772,14 +713,12 @@ input:focus, textarea:focus{
   color: var(--muted) !important;
 }
 
-/* badge */
 :root[data-theme="light"] .badge-on{
   color: rgba(120,60,0,.95) !important;
   background: rgba(255,122,0,.14) !important;
   border-color: rgba(255,122,0,.28) !important;
 }
 
-/* ===== Logo da Sidebar (substitui o avatar "A") ===== */
 .avatar.avatar-logo{
   background: transparent !important;
   border: none !important;
@@ -801,46 +740,35 @@ input:focus, textarea:focus{
   object-fit: contain;
   display:block;
 }
-/* =========================
-   RANGE SLIDER (FIX)
-   - thumb 100% centralizado
-   - alinhamento com Tempo médio
-   - visual mais limpo
-========================= */
 
-/* linha do raio + tempo */
 .row-2{
   display:grid;
   grid-template-columns: 1fr 180px;
   gap: 22px;
-  align-items: start; /* melhor que end nesse caso */
+  align-items: start; 
 }
 
-/* remove espaçamentos que atrapalham o alinhamento */
 .range-wrap{
   margin-top: 6px;
 }
 
-/* slider */
 .range{
   -webkit-appearance:none;
   appearance:none;
   width:100%;
-  height:8px;                 /* um pouco mais grossa e bonita */
+  height:8px;                
   border-radius:999px;
   background:rgba(255,255,255,.14);
   outline:none;
-  margin: 10px 0 6px;         /* diminui p/ alinhar com input */
+  margin: 10px 0 6px;         
 }
 
-/* track webkit */
 .range::-webkit-slider-runnable-track{
   height:8px;
   border-radius:999px;
-  background: transparent;     /* IMPORTANT: o fill vem do JS (linear-gradient) */
+  background: transparent;     
 }
 
-/* thumb webkit: CENTRALIZA NO TRACK */
 .range::-webkit-slider-thumb{
   -webkit-appearance:none;
   appearance:none;
@@ -851,8 +779,7 @@ input:focus, textarea:focus{
   border:3px solid rgba(0,0,0,.55);
   cursor:pointer;
 
-  /* ✅ centralização correta no webkit */
-  margin-top: calc((8px - 20px)/2); /* track=8, thumb=20 => -6px */
+  margin-top: calc((8px - 20px)/2); 
   box-shadow:
     0 0 0 4px rgba(255,122,0,.18),
     0 10px 22px rgba(0,0,0,.35);
@@ -866,7 +793,6 @@ input:focus, textarea:focus{
     0 12px 26px rgba(0,0,0,.40);
 }
 
-/* Firefox */
 .range::-moz-range-track{
   height:8px;
   border-radius:999px;
@@ -889,39 +815,32 @@ input:focus, textarea:focus{
     0 10px 22px rgba(0,0,0,.35);
 }
 
-/* ✅ deixa o input do tempo com a mesma “altura visual” */
 #tempoMedio{
   height: 42px;
   padding: 10px 12px;
 }
 
-/* label-row (Raio + valor) fica mais certinho */
 .label-row{
   margin-bottom: 2px;
 }
-/* ========= ALINHAMENTO RAIO x TEMPO ========= */
 
-/* duas colunas alinhadas na MESMA linha */
 .row-2{
   display:grid;
   grid-template-columns: 1fr 180px;
   gap: 22px;
-  align-items: end;            /* ✅ alinha pelo “pé” dos campos */
+  align-items: end;         
 }
 
-/* garante que cada field se comporte igual */
 .row-2 .field{
   display:flex;
   flex-direction: column;
-  gap: 8px;                    /* espaço entre label e controle */
+  gap: 8px;                   
 }
 
-/* remove margens que “puxavam” o slider pra baixo e bagunçavam */
 .range-wrap{
-  margin: 0;                   /* ✅ sem margin-top */
+  margin: 0;                 
 }
 
-/* slider sem margin vertical grande */
 .range{
   -webkit-appearance:none;
   appearance:none;
@@ -930,32 +849,26 @@ input:focus, textarea:focus{
   border-radius:999px;
   background:rgba(255,255,255,.14);
   outline:none;
-  margin: 0;                   /* ✅ tira margin 10px/18px */
+  margin: 0;                 
 }
 
-/* escala embaixo do slider */
 .range-scale{
-  margin-top: 8px;             /* espaço controlado */
+  margin-top: 8px;             
 }
 
-/* input do tempo com altura “igual” visualmente */
 #tempoMedio{
   height: 42px;
   padding: 10px 12px;
 }
-/* empurra levemente o campo do tempo pra casar com o track */
+
 .row-2 .field:last-child{
   padding-bottom: 25px;
 }
-/* =========================
-   VALOR DO SLIDER (340m)
-========================= */
 
 .range-wrap{
   position: relative;
 }
 
-/* número que acompanha o slider */
 #rangeValue{
   position: absolute;
   top: -10px;
@@ -976,7 +889,6 @@ input:focus, textarea:focus{
   white-space: nowrap;
 }
 
-/* evita cortar nas pontas */
 #rangeValue.is-min{
   transform:translateX(0);
 }
@@ -984,16 +896,13 @@ input:focus, textarea:focus{
 #rangeValue.is-max{
   transform:translateX(-100%);
 }
-/* ===== PATCH: tooltip não tampa o texto do raio ===== */
+
 .range-wrap{
   position: relative;
-  padding-top: 16px;   /* cria espaço pro tooltip acima do slider */
+  padding-top: 16px;   
 }
 
 #rangeValue{
-  top: -6px;           /* antes estava muito em cima do label; aqui fica acima do track */
+  top: -6px;          
   z-index: 2;
 }
-
-/* se quiser ainda mais alto (opcional) */
-/* #rangeValue{ top: -10px; } */
