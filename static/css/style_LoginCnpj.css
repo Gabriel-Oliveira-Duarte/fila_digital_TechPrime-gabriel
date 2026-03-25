@@ -1,4 +1,3 @@
-/* RESET */
 *{ box-sizing:border-box; margin:0; padding:0; }
 
 :root{
@@ -15,12 +14,10 @@
   --stroke:rgba(255,255,255,.10);
 }
 
-/* BASE */
 html,body{ height:100%; }
 body{
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 
-  /* ✅ glow no topo + glow no rodapé (resolve essa faixa “morta”) */
   background:
     radial-gradient(circle at top, rgba(255,122,0,.10), transparent 60%),
     radial-gradient(circle at bottom, rgba(255,122,0,.10), transparent 55%),
@@ -29,8 +26,6 @@ body{
   color: var(--white);
 }
 
-
-/* FUNDO */
 .bg-effects{
   position: fixed;
   inset: 0;
@@ -42,7 +37,6 @@ body{
   z-index: 0;
 }
 
-/* CENTRALIZAR */
 .wrap{
   min-height:100vh;
   display:grid;
@@ -50,12 +44,10 @@ body{
   padding:18px;
 }
 
-/* MODAL LOGIN (PROPORÇÃO IGUAL AO PRINT) */
 .modal{
   width: 100%;
   max-width: 480px;
 
-  /* ✅ não força altura enorme */
   min-height: unset;
   height: auto;
 
@@ -68,7 +60,6 @@ body{
   text-align: center;
   position: relative;
 
-  /* ✅ não centraliza verticalmente (evita “buraco” em cima e em baixo) */
   display: block;
 }
 
@@ -82,7 +73,6 @@ body.lock {
   touch-action: none;
 }
 
-/* TÍTULO */
 .title{
   font-weight:900;
   letter-spacing:.02em;
@@ -93,17 +83,14 @@ body.lock {
 .title-orange{ color:var(--orange); }
 .title-white{ color:rgba(255,255,255,.55); margin-left:2px; }
 
-/* SUBTÍTULO */
 .subtitle{
   font-size:16px;
   color:rgba(255,255,255,.55);
   margin-bottom:22px;
 }
 
-/* FORM */
 .form{ display:flex; flex-direction:column; gap:10px; }
 
-/* INPUT COM ÍCONE */
 .inputWrap{
   position:relative;
   width:100%;
@@ -135,7 +122,6 @@ body.lock {
   box-shadow: 0 0 0 3px rgba(255,122,0,.18);
 }
 
-/* HINT */
 .inputHint{
   text-align: left;
   font-size: 13px;
@@ -144,7 +130,6 @@ body.lock {
   margin-bottom: 10px;
 }
 
-/* ERRO — só aparece quando tem texto */
 .error{
   text-align: left;
   font-size: 13px;
@@ -162,7 +147,6 @@ body.lock {
   margin-bottom: 14px;
 }
 
-/* BOTÃO PRINCIPAL (CORRIGIDO) */
 .btn{
   margin-top: 8px;
   width: 100%;
@@ -174,7 +158,6 @@ body.lock {
   font-size: 16px;
   color: #111;
 
-  /* ✅ gradiente correto */
   background: linear-gradient(180deg, var(--orange));
 
   transition: transform .12s ease, box-shadow .18s ease, margin-top .25s ease;
@@ -185,12 +168,10 @@ body.lock {
 }
 .btn:active{ transform: translateY(1px); }
 
-/* Quando existe erro no formulário: distância maior pro botão */
 .modal.has-error .btn{
   margin-top: 18px;
 }
 
-/* LINK "COMO FUNCIONA" */
 .help{
   margin-top:10px;
   border:0;
@@ -219,7 +200,6 @@ body.lock {
   font-size:12px;
 }
 
-/* SHAKE NO ERRO */
 @keyframes shakePremium{
   0%{ transform: translateX(0); }
   18%{ transform: translateX(-10px); }
@@ -230,7 +210,6 @@ body.lock {
 }
 .modal.shake{ animation: shakePremium .38s ease; }
 
-/* MOBILE */
 @media (max-width: 520px){
   .modal,
   .success{
@@ -253,9 +232,6 @@ body.lock {
   }
 }
 
-/* ========================= */
-/* SUCESSO (ESTILO DO PRINT) */
-/* ========================= */
 .overlay{
   position: fixed;
   inset: 0;
@@ -358,7 +334,6 @@ body.lock {
   margin-bottom: 22px;
 }
 
-/* EDITAR NOME (canto direito em desktop / central em mobile) */
 .editName{
   border: 0;
   background: transparent;
@@ -383,10 +358,8 @@ body.lock {
 }
 .arrow{ font-size: 16px; opacity: .8; }
 
-/* trava scroll */
 body.lock{ overflow:hidden; }
 
-/* ===== TOOLTIP ===== */
 .helpWrap{
   position: relative;
   display: grid;
@@ -459,7 +432,6 @@ body.lock{ overflow:hidden; }
   }
 }
 
-/* ===== FOOTER ===== */
 .siteFooter{
   position: fixed;
   bottom: 14px;
@@ -487,7 +459,6 @@ body.lock{ overflow:hidden; }
   .siteFooter{ font-size: 11px; bottom: 10px; }
 }
 
-/* float */
 @keyframes floatModal{
   0% { transform: translateY(0); }
   33%{ transform: translateY(-6px); }
@@ -496,7 +467,6 @@ body.lock{ overflow:hidden; }
 }
 .modal{ animation: floatModal 7.5s cubic-bezier(.4,0,.2,1) infinite; }
 
-/* ===== CONTORNO PREMIUM ===== */
 .modal,
 .success{
   position: relative;
@@ -536,7 +506,6 @@ body.lock{ overflow:hidden; }
   100% { background-position: 300% 50%; }
 }
 
-/* ===== DIVISOR OU + BOTÃO SECUNDÁRIO ===== */
 .divider{
   margin-top: 14px;
   display: flex;
@@ -555,7 +524,7 @@ body.lock{ overflow:hidden; }
   letter-spacing: .16em;
   color: rgba(255,255,255,.40);
 }
-/* ===== BOTÃO SECUNDÁRIO (EXATAMENTE COMO NO PRINT) ===== */
+
 .btnSecondary{
   margin-top: 14px;
   width: 100%;
@@ -582,12 +551,10 @@ body.lock{ overflow:hidden; }
     transform .12s ease;
 }
 
-/* ÍCONE segue a cor do texto */
 .btnSecondary .bizIcon{
   color: inherit;
 }
 
-/* HOVER */
 .btnSecondary:hover{
   color: #ffffff;
   border-color: #ff6600;
@@ -595,17 +562,14 @@ body.lock{ overflow:hidden; }
   transform: translateY(-1px);
 }
 
-/* ACTIVE (clique) */
 .btnSecondary:active{
   transform: translateY(0);
   background: rgba(255,102,0,.08);
 }
 .bizIcon{ display: grid; place-items: center; color: rgba(255,255,255,.65); }
 
-/* ===== MODO CLIENTE / ESTABELECIMENTO ===== */
 .mode.hidden{ display:none; }
 
-/* botão "Esqueceu a senha?" */
 .linkSoft{
   margin-top: 6px;
   border: 0;
@@ -620,7 +584,6 @@ body.lock{ overflow:hidden; }
 }
 .linkSoft:hover{ background: rgba(255,255,255,.06); }
 
-/* input com olho */
 .input.hasEye {
   padding-right: 48px;
 }
@@ -646,7 +609,7 @@ body.lock{ overflow:hidden; }
   height: 24px;
   padding: 0;
 
-  color: #ffffff; /* padrão para fundo escuro */
+  color: #ffffff; 
 }
 
 .eyeBtn svg {
@@ -656,12 +619,10 @@ body.lock{ overflow:hidden; }
   pointer-events: none;
 }
 
-/* quando o campo estiver em autofill, deixa o olho escuro */
 input:-webkit-autofill + .eyeBtn {
   color: #111111;
 }
 
-/* quando NÃO estiver em autofill, deixa o olho claro */
 .input.hasEye:not(:-webkit-autofill) + .eyeBtn {
   color: #ffffff;
 }
@@ -680,10 +641,8 @@ input:-webkit-autofill {
   box-shadow: none;
 }
 
-/* espaçamento entre inputs do modo estabelecimento */
 #modeBiz .inputWrap + .inputWrap { margin-top: 14px; }
 
-/* ===== SUCESSO: BOTÃO ACOMPANHAR ===== */
 .successBtn{
   margin: 24px auto 0;
   display: inline-flex;
@@ -698,7 +657,6 @@ input:-webkit-autofill {
   cursor: pointer;
   color: #111;
 
-  /* ✅ garante o laranja mesmo se não usar .btn */
   background: linear-gradient(180deg, var(--orange));
 
   width: auto;
@@ -712,7 +670,6 @@ input:-webkit-autofill {
 }
 .successBtn:active{ transform: translateY(1px); }
 
-/* Editar no canto direito em desktop */
 .editCorner{
   position: absolute;
   bottom: 22px;
@@ -722,7 +679,6 @@ input:-webkit-autofill {
 }
 .editCorner:hover{ opacity: 1; }
 
-/* Mobile: centraliza o editar e mantém layout limpo */
 @media (max-width: 480px){
   .editCorner{
     position: static;
@@ -732,7 +688,6 @@ input:-webkit-autofill {
   }
 }
 
-/* ===== LINHA DE LINKS (ESTABELECIMENTO) ===== */
 .bizLinksRow{
   margin-top: 8px;
   display: flex;
@@ -741,12 +696,11 @@ input:-webkit-autofill {
   width: 100%;
 }
 
-/* base */
 .linkSoft{
   border: 0;
   background: transparent;
   font-size: 14px;
-  font-weight: 500;                  /* sem negrito */
+  font-weight: 500;                
   color: rgba(255,255,255,.55);
   cursor: pointer;
   padding: 8px 10px;
@@ -754,40 +708,33 @@ input:-webkit-autofill {
   transition: color .18s ease, background .18s ease;
 }
 
-/* ESQUERDA */
 .linkLeft{
   padding-left: 0;
 }
 
-/* 👉 DIREITA – CRIAR CONTA */
 .linkRight{
   padding-right: 0;
   font-weight: 500;
-  color: #ff6600;                    /* LARANJA GARANTIDO */
+  color: #ff6600;                   
 }
 
-/* hover */
 .linkSoft:hover{
   background: rgba(255,255,255,.05);
   color: rgba(255,255,255,.85);
 }
 
-/* hover específico do criar conta */
 .linkRight:hover{
   color: #ff7a00;
 }
 
-/* ===== MODO CRIAR CONTA: espaçamento entre inputs ===== */
 #modeBizSignup .inputWrap + .inputWrap{
   margin-top: 14px;
 }
 
-/* ===== Linha "Já tem uma conta? Fazer login" ===== */
 #modeBizSignup .bizLinksRow{
   margin-top: 10px;
 }
 
-/* frase "Já tem uma conta? Fazer login" */
 .authSwitch{
   margin-top: 14px;
   display: flex;
@@ -800,14 +747,13 @@ input:-webkit-autofill {
   font-weight: 400;
 }
 
-/* link Fazer login */
 .authLink{
   border: 0;
   background: transparent;
   padding: 0;
 
   font-size: 14px;
-  font-weight: 500;          /* NÃO negrito */
+  font-weight: 500;          
   color: var(--orange);
   cursor: pointer;
 
@@ -819,10 +765,9 @@ input:-webkit-autofill {
   transform: translateY(-1px);
 }
 
-/* ===== MODO "ESQUECEU A SENHA" (card compacto igual ao print) ===== */
 .modal.compact{
-  min-height: 0;              /* tira a altura travada */
-  padding: 28px 28px 22px;    /* mais compacto */
+  min-height: 0;              
+  padding: 28px 28px 22px;    
 }
 
 @media (max-width: 520px){
@@ -831,7 +776,6 @@ input:-webkit-autofill {
   }
 }
 
-/* garante que o botão/link fiquem com o espaçamento igual ao print */
 #modeBizForgot .btn{
   margin-top: 14px;
 }
@@ -840,30 +784,25 @@ input:-webkit-autofill {
   margin-top: 12px;
 }
 
-/* ===== SUCESSO: desktop igual ao print (sem alterar mobile) ===== */
 @media (min-width: 481px){
-  /* vira “área” pra posicionar o Editar nome no canto */
   .success{
     position: relative;
   }
 
-  /* garante espaço no rodapé do modal pro canto */
   .successActions{
     position: relative;
     margin-top: 26px;
-    padding-bottom: 18px; /* espaço pro “Editar nome” */
-    display: block;       /* não usa flex no desktop */
+    padding-bottom: 18px; 
+    display: block;       
   }
 
-  /* botão centralizado */
   .successBtn{
     display: block;
-    margin: 0 auto;       /* central */
+    margin: 0 auto;      
     width: auto;
     min-width: 200px;
   }
 
-  /* “Editar nome” no canto inferior direito */
   #editNameBtn.editName{
     position: absolute;
     right: 26px;
@@ -875,29 +814,26 @@ input:-webkit-autofill {
 
   #editNameBtn.editName:hover{
     opacity: 1;
-    background: transparent; /* igual ao print */
+    background: transparent;
     transform: none;
   }
 }
 
-/* ===== SUCESSO: desktop igual ao print (sem mexer no mobile) ===== */
 @media (min-width: 481px){
 
   .success{
     position: relative !important;
   }
 
-  /* área do botão central */
   .successActions{
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
     gap: 0 !important;
     margin-top: 26px !important;
-    padding-bottom: 34px !important; /* espaço pro "Editar nome" embaixo */
+    padding-bottom: 34px !important;
   }
 
-  /* botão centralizado e com largura controlada */
   .successBtn{
     display: inline-flex !important;
     width: auto !important;
@@ -905,7 +841,6 @@ input:-webkit-autofill {
     margin: 0 !important;
   }
 
-  /* "Editar nome" preso no canto inferior direito do modal */
   @media (min-width: 481px){
 
   .success{
@@ -915,7 +850,6 @@ input:-webkit-autofill {
   #editNameBtn{
     position: absolute !important;
 
-    /* força o canto inferior direito REAL */
     right: 16px !important;
     bottom: 16px !important;
 
@@ -934,10 +868,6 @@ input:-webkit-autofill {
   }
 }
 }
-
-/* =========================
-   CADASTRO 2 ETAPAS (CNPJ)
-========================= */
 
 .modalClose{
   position:absolute;
@@ -1040,16 +970,10 @@ input:-webkit-autofill {
   padding-right: 44px;
 }
 
-
-/* =========================
-   FIX: esconder QUALQUER coisa com .hidden
-   (steps do cadastro 2 etapas)
-========================= */
 .hidden{
   display: none !important;
 }
 
-/* reforço só pros steps */
 .signupStep.hidden{
   display: none !important;
 }
@@ -1060,7 +984,6 @@ input:-webkit-autofill {
   }
 }
 
-/* SELECT (dropdown) no tema escuro */
 select.input,
 select.selectInput{
   background: rgba(255,255,255,.08);
@@ -1068,20 +991,17 @@ select.selectInput{
   border: 1px solid rgba(255,255,255,.12);
 }
 
-/* Opções dentro do dropdown (importante) */
 select.input option,
 select.selectInput option{
-  background: #111217;       /* fundo escuro */
-  color: #fff;               /* texto branco */
+  background: #111217;       
+  color: #fff;             
 }
 
-/* Placeholder tipo "Selecione" (se você usa value="") */
 select.input option[disabled],
 select.selectInput option[disabled]{
   color: rgba(255,255,255,.45);
 }
 
-/* Foco igual seus inputs */
 select.input:focus,
 select.selectInput:focus{
   outline: none;
@@ -1102,23 +1022,19 @@ select.selectInput{
   position: relative;
   z-index: 2;
   pointer-events: auto;
-  -webkit-appearance: menulist; /* iOS */
+  -webkit-appearance: menulist; 
   appearance: menulist;
 }
 
-/* ❌ Esconde o X APENAS no login do estabelecimento */
 #modeBiz:not(.hidden) ~ .modalClose,
 #modeBiz:not(.hidden) .modalClose{
   display: none !important;
 }
 
-/* Esconde o X somente quando o modal estiver com a classe no-close */
 .modal.no-close .modalClose{
   display: none !important;
 }
-/* ===== HOTFIX MOBILE: garantir botões visíveis ===== */
 @media (max-width: 600px) {
-  /* botão do login */
   #btnClient,
   .btn,
   .successBtn {
@@ -1130,14 +1046,13 @@ select.selectInput{
     width: 100% !important;
     min-height: 48px !important;
 
-    background: #ff7300 !important; /* laranja */
+    background: #ff7300 !important;
     color: #ffffff !important;
     border: none !important;
     border-radius: 14px !important;
     font-weight: 700 !important;
   }
 
-  /* se alguma camada estiver cobrindo */
   .modal, #modalCard, .wrap {
     position: relative !important;
     z-index: 10 !important;
@@ -1154,16 +1069,11 @@ select.selectInput{
   }
 }
 
-/* garante cor mesmo sem hover (no mobile não existe hover) */
 #btnClient:hover,
 .successBtn:hover {
   background: #ff7300 !important;
 }
-/* =========================
-   FIX iOS/Safari: botões invisíveis
-   ========================= */
 
-/* 1) Botão "Entrar na fila" (login) */
 body #modalCard button#btnClient.btn{
   display: inline-flex !important;
   align-items: center !important;
@@ -1178,7 +1088,7 @@ body #modalCard button#btnClient.btn{
   border-radius: 14px !important;
 
   color: #000000 !important;
-  -webkit-text-fill-color: #030202 !important; /* iOS */
+  -webkit-text-fill-color: #030202 !important;
   font-size: 16px !important;
   font-weight: 800 !important;
   letter-spacing: .2px !important;
@@ -1188,7 +1098,6 @@ body #modalCard button#btnClient.btn{
   pointer-events: auto !important;
 }
 
-/* 2) Botão "Acompanhar fila" (overlay) */
 body .overlay .successActions button.successBtn{
   display: inline-flex !important;
   align-items: center !important;
@@ -1203,7 +1112,7 @@ body .overlay .successActions button.successBtn{
   border-radius: 14px !important;
 
   color: #080202 !important;
-  -webkit-text-fill-color: #010000 !important; /* iOS */
+  -webkit-text-fill-color: #010000 !important;
   font-size: 16px !important;
   font-weight: 800 !important;
 
@@ -1212,24 +1121,20 @@ body .overlay .successActions button.successBtn{
   pointer-events: auto !important;
 }
 
-/* 3) Garante que a área dos botões exista (caso esteja escondida) */
 body .overlay .successActions{
   display: flex !important;
   flex-direction: column !important;
   gap: 12px !important;
 }
 
-/* 4) iOS: remove aparência padrão que às vezes “apaga” o texto */
 button, input{
   -webkit-appearance: none !important;
   appearance: none !important;
 }
 
-/* 5) iOS: melhora clique (evita “não clicável”) */
 button{
   touch-action: manipulation !important;
 }
-/* ===== ETAPA 3 - BOTÕES FINAIS ===== */
 
 #signupStep3 .inputWrapCep{
   position: relative;
