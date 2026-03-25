@@ -1,8 +1,5 @@
 console.log("[AO VIVO] app_fila_ao_vivo.js (API /api) carregou");
 
-// ===============================
-// ESTABELECIMENTO (nome dinâmico)
-// ===============================
 function obterNomeEstabelecimento() {
   const direct =
     localStorage.getItem("nomeEstabelecimento") ||
@@ -35,9 +32,6 @@ function preencherNomeNoTopo() {
 
 document.addEventListener("DOMContentLoaded", preencherNomeNoTopo);
 
-// ===============================
-// Sidebar mobile
-// ===============================
 const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
 const menuBtn = document.getElementById("menuBtn");
@@ -56,16 +50,12 @@ function closeSidebar(){
 if (menuBtn) menuBtn.addEventListener("click", openSidebar);
 if (backdrop) backdrop.addEventListener("click", closeSidebar);
 
-// ===============================
-// API
-// ===============================
 const API_BASE = window.location.origin;
 
 const ENDPOINTS = {
   listarFilas: (estabId, status) => {
     const qs = new URLSearchParams();
     if (estabId) qs.set("estabelecimento_id", estabId);
-    // status: "ABERTA" | "FECHADA" | "EXCLUIDA" | null (todas)
     if (status) qs.set("status", status);
     const q = qs.toString();
     return `${API_BASE}/api/filas${q ? "?" + q : ""}`;
@@ -76,32 +66,25 @@ const ENDPOINTS = {
   listarClientes: (id) => `${API_BASE}/api/filas/${encodeURIComponent(id)}/clientes`,
 };
 
-// ===============================
-// ELEMENTOS
-// ===============================
 const filasGrid = document.getElementById("filasGrid");
 const buscaFila = document.getElementById("buscaFila");
 const filtroAbertas = document.getElementById("filtroAbertas");
 const filtroFechadas = document.getElementById("filtroFechadas");
 const filtroTodas = document.getElementById("filtroTodas");
-const filtroExcluidas = document.getElementById("filtroExcluidas"); // ✅ novo chip
+const filtroExcluidas = document.getElementById("filtroExcluidas"); 
 
 const queueList = document.getElementById("queueList");
 const queueCountLabel = document.getElementById("queueCountLabel");
 const btnRefresh = document.getElementById("btnRefresh");
 const connText = document.getElementById("connText");
 
-// ===============================
-// ESTADO
-// ===============================
-let filtroStatus = "ABERTA"; // ABERTA | FECHADA | EXCLUIDA | null (todas)
+let filtroStatus = "ABERTA"; 
 let filas = [];
 let filaAtualId = null;
 let filaAtualNome = null;
 let clientes = [];
 let buscaTexto = "";
 
-// tenta pegar estab id (do seu login)
 function getEstabId(){
   const tryKeys = ["estabelecimento_id", "estab_id", "idEstabelecimento"];
   for (const k of tryKeys){
@@ -118,9 +101,6 @@ function getEstabId(){
   return null;
 }
 
-// ===============================
-// HELPERS
-// ===============================
 function setConn(txt){ if (connText) connText.textContent = txt; }
 
 function setActiveChip(which){
@@ -166,9 +146,6 @@ async function apiFetch(url, options = {}){
   return res.json();
 }
 
-// ===============================
-// TEMPLATES
-// ===============================
 function badgeFila(status){
   const s = String(status || "").toUpperCase();
   if (s === "ABERTA")   return `<span class="badge ABERTA"><i class="bi bi-unlock"></i> ABERTA</span>`;
@@ -183,9 +160,6 @@ function filaCardTemplate(f){
   const status = (f.status || "ABERTA").toUpperCase();
   const selected = String(id) === String(filaAtualId) ? " selected" : "";
 
-  // ✅ Ajustes pedidos:
-  // - EXCLUIDA: só badge, sem texto repetido
-  // - excluir: botão com X + "Excluir fila" em vermelho
   let actions = "";
 
   if (status === "ABERTA"){
@@ -211,7 +185,6 @@ function filaCardTemplate(f){
       </button>
     `;
   } else {
-    // EXCLUIDA: sem ações
     actions = ``;
   }
 
@@ -249,9 +222,6 @@ function itemTemplate(item){
   `;
 }
 
-// ===============================
-// RENDER
-// ===============================
 function renderFilas(){
   if (!filasGrid) return;
 
@@ -267,7 +237,6 @@ function renderFilas(){
 
   filasGrid.innerHTML = filtradas.map(filaCardTemplate).join("");
 
-  // Selecionar fila (não deixa selecionar excluída)
   filasGrid.querySelectorAll("[data-pick-id]").forEach(card => {
     card.addEventListener("click", (e) => {
       if (e.target.closest("button")) return;
@@ -276,12 +245,11 @@ function renderFilas(){
       if (!f) return;
 
       const st = String(f.status || "").toUpperCase();
-      if (st === "EXCLUIDA") return; // ✅ não seleciona
+      if (st === "EXCLUIDA") return; 
       selecionarFila(f);
     });
   });
 
-  // Ações
   filasGrid.querySelectorAll("button[data-action]").forEach(btn => {
     btn.addEventListener("click", async (e) => {
       e.stopPropagation();
@@ -315,7 +283,6 @@ function renderClientes(){
   const nomeFilaTxt = filaAtualNome ? `${filaAtualNome}` : "—";
   if (queueCountLabel) queueCountLabel.textContent = nomeFilaTxt;
 
-  // ✅ Se NÃO tem fila selecionada
   if (!filaAtualId){
     if (filtroStatus === "ABERTA"){
       if (queueList) {
@@ -327,7 +294,6 @@ function renderClientes(){
     return;
   }
 
-  // ✅ Se tem fila selecionada, só mostra lista/mensagens se a fila for ABERTA
   const filaObj = filas.find(f => String((f.idFila ?? f.id)) === String(filaAtualId));
   const statusFilaAtual = String(filaObj?.status || "").toUpperCase();
 
@@ -344,9 +310,6 @@ function renderClientes(){
   if (queueList) queueList.innerHTML = clientes.map(itemTemplate).join("");
 }
 
-// ===============================
-// LOAD
-// ===============================
 function selecionarFila(f){
   const id = f.idFila ?? f.id;
   filaAtualId = id;
@@ -365,7 +328,6 @@ async function carregarFilas(){
   filas = Array.isArray(data) ? data : [];
   renderFilas();
 
-  // ✅ se o filtro atual for EXCLUIDA, não tenta selecionar fila automaticamente
   if (filtroStatus === "EXCLUIDA"){
     filaAtualId = null;
     filaAtualNome = null;
@@ -374,7 +336,6 @@ async function carregarFilas(){
     return;
   }
 
-  // ✅ se fila selecionada sumiu, escolhe a 1ª NÃO excluída
   const existe = filas.some(f => String((f.idFila ?? f.id)) === String(filaAtualId));
   if (!existe){
     const primeiraValida = filas.find(f => String(f.status || "").toUpperCase() !== "EXCLUIDA");
@@ -400,9 +361,6 @@ async function carregarClientesDaFila(){
   renderClientes();
 }
 
-// ===============================
-// UI EVENTS
-// ===============================
 if (buscaFila){
   buscaFila.addEventListener("input", () => {
     buscaTexto = buscaFila.value || "";
@@ -429,7 +387,7 @@ if (filtroExcluidas) filtroExcluidas.addEventListener("click", async () => {
 });
 
 if (filtroTodas) filtroTodas.addEventListener("click", async () => {
-  filtroStatus = null; // todas
+  filtroStatus = null; 
   setActiveChip(filtroTodas);
   await carregarFilas();
 });
@@ -443,9 +401,7 @@ if (btnRefresh) btnRefresh.addEventListener("click", async () => {
   }
 });
 
-// ===============================
-// INIT
-// ===============================
+
 document.addEventListener("DOMContentLoaded", async () => {
   try{
     setActiveChip(filtroAbertas);
