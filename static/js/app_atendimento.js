@@ -1,10 +1,5 @@
-/* =========================================================
-   app_atendimento.js — COMPLETO (TOASTS só ENTROU/SAIU)
-========================================================= */
-
 const API_BASE = window.location.origin;
 
-// ================= ESTABELECIMENTO =================
 (function syncNomeEstab() {
   const ja = localStorage.getItem("nomeEstabelecimento");
   if (ja && ja.trim()) return;
@@ -32,7 +27,6 @@ function renderEstabNome(nome) {
   if (header) header.title = `Estabelecimento: ${finalNome}`;
 }
 
-// ================= ELEMENTOS UI =================
 const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
 const menuBtn = document.getElementById("menuBtn");
@@ -71,7 +65,6 @@ const filaSelect = document.getElementById("filaSelect");
 const filaInfo = document.getElementById("filaInfo");
 const statusRaioAtendimentoEl = document.getElementById("statusRaioAtendimento");
 
-// ================= SIDEBAR (mobile) =================
 function openSidebar() {
   if (!sidebar || !backdrop) return;
   sidebar.classList.add("open");
@@ -85,7 +78,6 @@ function closeSidebar() {
 menuBtn?.addEventListener("click", openSidebar);
 backdrop?.addEventListener("click", closeSidebar);
 
-// ================= HELPERS =================
 function pad3(n) { return String(n).padStart(3, "0"); }
 
 function setButtons({ canChamar=false, canFinalizar=false, canCancelar=false, canPular=false }) {
@@ -106,7 +98,6 @@ function setOpRunning(v) {
   }
 }
 
-// Modal pequeno
 function showCallModalCliente({ nome="—", posicao=1, titulo="Chamando cliente", ms=1800 }) {
   return new Promise((resolve) => {
     if (!callModal || !callNome || !callPosicao) return resolve();
@@ -122,7 +113,6 @@ function showCallModalCliente({ nome="—", posicao=1, titulo="Chamando cliente"
   });
 }
 
-// Overlay grande
 function openFinishOverlay({ mode="finalizado", nome="Cliente" } = {}) {
   if (!finishOverlay) return;
 
@@ -166,7 +156,6 @@ finishOverlay?.addEventListener("click", (e) => {
   if (e.target === finishOverlay) closeFinishOverlay();
 });
 
-// Modal compareceu?
 function askCompareceu({ nome="Cliente", posicao=1 } = {}) {
   return new Promise((resolve) => {
     if (!confirmModal) return resolve(true);
@@ -207,7 +196,6 @@ function askCompareceu({ nome="Cliente", posicao=1 } = {}) {
   });
 }
 
-// ================= FETCH =================
 async function getJSON(path) {
   const res = await fetch(API_BASE + path);
   const data = await res.json().catch(() => ({}));
@@ -226,7 +214,6 @@ async function postJSON(path, body = {}) {
   return data;
 }
 
-// ================= AUTH / ESTAB =================
 const estabId = Number(localStorage.getItem("estabelecimento_id") || 0);
 const estabNomeLS = (localStorage.getItem("estabelecimento_nome") || "").trim();
 
@@ -236,14 +223,12 @@ if (!estabId) {
   throw new Error("Sem estabelecimento_id");
 }
 
-// ================= FILA SELECIONADA =================
 const FILA_SELECIONADA_KEY = "filaSelecionadaId";
 let filaIdAtual = Number(localStorage.getItem(FILA_SELECIONADA_KEY) || 0);
 
 let atualCache = null;
 let proxCache = null;
 
-// ================= CONTROLE ANTI-RACE =================
 let pendingResult = null;
 let pendingUntil = 0;
 
@@ -264,7 +249,6 @@ function canAcceptWsMode(mode) {
   return mode === pendingResult;
 }
 
-// ================= TOASTS: SOMENTE ENTROU/SAIU =================
 function toastFromEvent(msg){
   const a = String(msg.action || "").toUpperCase();
   const p = msg.payload || {};
@@ -278,7 +262,6 @@ function toastFromEvent(msg){
   }
 }
 
-// ================= WEBSOCKET =================
 let ws = null;
 let wsRetryTimer = null;
 let wsPingTimer = null;
@@ -320,13 +303,11 @@ ws.onmessage = async (e) => {
     const p = msg.payload || {};
     const nome = p.nome || atualCache?.nome || "Cliente";
 
-    // cliente saiu sozinho: só atualiza
     if (action === "CLIENTE_SAIU") {
       await refreshAtendimento();
       return;
     }
 
-    // finalizado (SEM toast — só modal)
     if (action === "ATENDIMENTO_FINALIZADO" || action === "FINALIZOU") {
       if (canAcceptWsMode("finalizado")) {
         openFinishOverlay({ mode: "finalizado", nome });
@@ -336,7 +317,6 @@ ws.onmessage = async (e) => {
       return;
     }
 
-    // cancelado (SEM toast — só modal)
     if (action === "CANCELOU" || action === "ATENDIMENTO_CANCELADO") {
       if (canAcceptWsMode("cancelado")) {
         openFinishOverlay({ mode: "cancelado", nome });
@@ -348,7 +328,6 @@ ws.onmessage = async (e) => {
 
     await refreshAtendimento();
   } catch {
-    // ignore
   }
 };
 
@@ -402,7 +381,6 @@ function renderDemaisFila(lista) {
     `;
   }).join("");
 }
-// ================= API: STATUS ATENDIMENTO =================
 async function refreshAtendimento() {
   try {
     if (!filaIdAtual) {
@@ -493,7 +471,6 @@ renderDemaisFila(data.demais_na_fila || []);
   }
 }
 
-// ================= CARREGAR FILAS =================
 async function carregarFilas() {
   const filas = await getJSON(`/api/filas?estabelecimento_id=${estabId}`);
 
@@ -559,7 +536,6 @@ filaSelect?.addEventListener("change", async () => {
   await refreshAtendimento();
 });
 
-// ================= AÇÕES =================
 btnChamar?.addEventListener("click", async () => {
   if (!filaIdAtual || opRunning) return;
 
@@ -649,7 +625,6 @@ btnPular?.addEventListener("click", async () => {
   }
 });
 
-// ================= INIT =================
 (async () => {
   renderEstabNome(estabNomeLS);
 
