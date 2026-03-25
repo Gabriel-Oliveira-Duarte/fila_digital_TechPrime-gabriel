@@ -1,12 +1,9 @@
-// ================= NAVEGAÇÃO =================
 function go(url){ window.location.href = url; }
 
-// Sidebar mobile
 const menuBtn = document.getElementById("menuBtn");
 const sidebar = document.getElementById("sidebar");
 menuBtn?.addEventListener("click", () => sidebar?.classList.toggle("open"));
 
-// ================= CONFIG =================
 const API_BASE = window.location.origin;
 
 function getEstabId(){
@@ -15,7 +12,6 @@ function getEstabId(){
   return id > 0 ? id : 0;
 }
 
-// ================= ESTABELECIMENTO (nome dinâmico) =================
 (function syncNomeEstab(){
   const ja = localStorage.getItem("nomeEstabelecimento");
   if (ja && ja.trim()) return;
@@ -43,19 +39,16 @@ function renderTopoNomeEstab(nome){
   if (header) header.title = `Estabelecimento: ${finalNome}`;
 }
 
-// ================= UI (SEU HTML) =================
 const elFila = document.getElementById("fila");
 const elTempoMedio = document.getElementById("tempoMedioDash");
 const elEmAtendimento = document.getElementById("emAtendimentoDash");
 
-// NOVOS CARDS
 const elCancelados = document.getElementById("canceladosDash");
 const elConcluidos = document.getElementById("concluidosDash");
 
 const elProximoNome = document.getElementById("proximoNome");
 const btnChamar = document.getElementById("btnChamar");
 
-// ================= API =================
 async function getJSON(path){
   const res = await fetch(API_BASE + path);
   const data = await res.json().catch(() => ({}));
@@ -74,7 +67,6 @@ async function postJSON(path, body){
   return data;
 }
 
-// ================= WEBSOCKET (filas abertas) =================
 const wsMap = new Map();
 let lastKey = "";
 
@@ -114,7 +106,6 @@ function syncWS(filaIds){
         const msg = JSON.parse(e.data);
         if (msg?.type !== "fila_update") return;
 
-        // mantém atualização
         atualizarDashboard(false).catch(()=>{});
 
       } catch {}
@@ -124,9 +115,7 @@ function syncWS(filaIds){
   }
 }
 
-// ================= RENDER =================
 function renderResumo(data){
-  // ✅ topo nome
   const nomeLocal = localStorage.getItem("estabelecimento_nome");
   const nomeApi = data?.estabelecimento?.nome;
   const nome = (nomeApi || nomeLocal || "—");
@@ -137,7 +126,6 @@ function renderResumo(data){
   }
   renderTopoNomeEstab(nome);
 
-  // ✅ totais (todas as filas do estabelecimento)
   const totais = data?.totais || {};
 
   if (elFila) elFila.textContent = String(totais.na_fila ?? 0);
@@ -153,7 +141,6 @@ function renderResumo(data){
   if (elCancelados) elCancelados.textContent = String(totais.cancelados ?? 0);
   if (elConcluidos) elConcluidos.textContent = String(totais.concluidos ?? 0);
 
-  // ✅ próximo global do estabelecimento
   const prox = data?.proximo || null;
   if (!prox){
     if (elProximoNome) elProximoNome.textContent = "—";
@@ -165,7 +152,6 @@ function renderResumo(data){
   if (btnChamar) btnChamar.disabled = false;
 }
 
-// ================= UPDATE =================
 async function atualizarDashboard(syncSockets = true){
   const estabId = getEstabId();
   if (!estabId){
@@ -189,7 +175,6 @@ async function atualizarDashboard(syncSockets = true){
   }
 }
 
-// ================= AÇÃO CHAMAR =================
 btnChamar?.addEventListener("click", async () => {
   try {
     const estabId = getEstabId();
@@ -206,7 +191,6 @@ btnChamar?.addEventListener("click", async () => {
   }
 });
 
-// ================= INIT =================
 (async () => {
   try {
     renderTopoNomeEstab(localStorage.getItem("estabelecimento_nome") || "");
