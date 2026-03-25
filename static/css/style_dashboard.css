@@ -21,14 +21,12 @@ body{
   color:var(--text);
 }
 
-/* LAYOUT */
 .app{
   display:grid;
   grid-template-columns:280px 1fr;
   min-height:100vh;
 }
 
-/* SIDEBAR */
 .sidebar{
   background:linear-gradient(180deg, #0e0f12 0%, #0a0b0d 100%);
   border-right:1px solid var(--border);
@@ -40,7 +38,6 @@ body{
   height:100vh;
 }
 
-/* BRAND (corrigido p/ ficar igual às outras páginas, mesmo com b/small) */
 .sidebar .brand{
   display:flex;
   align-items:center;
@@ -115,7 +112,6 @@ body{
   border-top:1px solid rgba(255,255,255,.06);
 }
 
-/* Footer (você usa <footer> no dashboard) */
 .sidebar footer{
   padding:10px 10px 6px;
   border-top:1px solid rgba(255,255,255,.06);
@@ -125,14 +121,12 @@ body{
   margin-top:auto;
 }
 
-/* CONTENT */
 .content{
   display:flex;
   flex-direction:column;
   min-width:0;
 }
 
-/* TOPBAR */
 .topbar{
   height:64px;
   display:flex;
@@ -164,7 +158,6 @@ body{
 }
 .estab b{color:#fff;font-weight:800}
 
-/* Menu button (mobile) */
 .menu-btn{
   display:none;
   width:42px;height:42px;border-radius:14px;
@@ -175,7 +168,6 @@ body{
 }
 .menu-btn i{font-size:20px}
 
-/* ICONS (corrigido p/ ficar igual aos botões das outras páginas) */
 .topbar .icons{
   display:flex;
   align-items:center;
@@ -201,7 +193,6 @@ body{
   transform:translateY(-1px);
 }
 
-/* BACKDROP (se você adicionar no HTML futuramente) */
 .backdrop{
   position:fixed;
   inset:0;
@@ -211,7 +202,6 @@ body{
 }
 .backdrop.show{display:block}
 
-/* PAGE */
 .page{
   padding:22px;
   max-width:1280px;
@@ -230,7 +220,6 @@ body{
   font-size:14px;
 }
 
-/* CARDS (MÉTRICAS) */
 .card{
   padding:16px;
   border-radius:14px;
@@ -281,7 +270,6 @@ body{
   font-size:13px;
 }
 
-/* BOX / PRÓXIMO */
 .box{
   border-radius:16px;
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
@@ -319,7 +307,6 @@ body{
   margin-left:8px;
 }
 
-/* BOTÕES */
 button{
   border-radius:14px;
   border:1px solid rgba(255,255,255,.10);
@@ -347,7 +334,6 @@ button:hover{
 }
 .btn-primary:hover{background:var(--accent2)}
 
-/* AÇÕES */
 .actions{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -355,7 +341,6 @@ button:hover{
 }
 .actions button{height:46px}
 
-/* RESPONSIVO */
 @media (max-width: 1100px){
   .cards{grid-template-columns:repeat(2,1fr)}
   .actions{grid-template-columns:repeat(2,1fr)}
@@ -386,7 +371,7 @@ button:hover{
   .cards{grid-template-columns:1fr}
   .actions{grid-template-columns:1fr}
 }
-/* cria espaçamento e linha antes do último item do menu */
+
 .nav a:last-of-type{
   margin-top:14px;
   position:relative;
@@ -402,7 +387,6 @@ button:hover{
   background:rgba(255,255,255,.06);
 }
 
-/* Tema claro/escuro via data-theme no <html> */
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
@@ -411,7 +395,6 @@ button:hover{
   color-scheme: light;
 }
 
-/* Exemplo básico (você pode adaptar pro seu design) */
 :root[data-theme="light"] body {
   background: #f5f6f8;
   color: #111;
@@ -453,14 +436,12 @@ body{
   color:var(--text);
 }
 
-/* LAYOUT */
 .app{
   display:grid;
   grid-template-columns:280px 1fr;
   min-height:100vh;
 }
 
-/* SIDEBAR */
 .sidebar{
   background:linear-gradient(180deg, #0e0f12 0%, #0a0b0d 100%);
   border-right:1px solid var(--border);
@@ -472,7 +453,6 @@ body{
   height:100vh;
 }
 
-/* BRAND */
 .sidebar .brand{
   display:flex;
   align-items:center;
@@ -547,7 +527,6 @@ body{
   border-top:1px solid rgba(255,255,255,.06);
 }
 
-/* Footer (você usa <footer> no dashboard) */
 .sidebar footer{
   padding:10px 10px 6px;
   border-top:1px solid rgba(255,255,255,.06);
@@ -557,14 +536,12 @@ body{
   margin-top:auto;
 }
 
-/* CONTENT */
 .content{
   display:flex;
   flex-direction:column;
   min-width:0;
 }
 
-/* TOPBAR */
 .topbar{
   height:64px;
   display:flex;
@@ -596,7 +573,6 @@ body{
 }
 .estab b{color:#fff;font-weight:800}
 
-/* Menu button (mobile) */
 .menu-btn{
   display:none;
   width:42px;height:42px;border-radius:14px;
@@ -607,7 +583,6 @@ body{
 }
 .menu-btn i{font-size:20px}
 
-/* ✅ TOP ACTIONS (igual Atendimento) */
 .top-actions{display:flex;align-items:center;gap:10px}
 .icon-btn{
   width:42px;height:42px;border-radius:14px;
@@ -625,7 +600,6 @@ body{
 }
 .icon-btn i{font-size:18px;opacity:.9}
 
-/* BACKDROP (se você adicionar no HTML futuramente) */
 .backdrop{
   position:fixed;
   inset:0;
@@ -635,7 +609,6 @@ body{
 }
 .backdrop.show{display:block}
 
-/* PAGE */
 .page{
   padding:22px;
   max-width:1280px;
@@ -654,7 +627,6 @@ body{
   font-size:14px;
 }
 
-/* CARDS (MÉTRICAS) */
 .cards{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -697,7 +669,6 @@ body{
   font-size:13px;
 }
 
-/* BOX / PRÓXIMO */
 .box{
   border-radius:16px;
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
@@ -735,7 +706,6 @@ body{
   margin-left:8px;
 }
 
-/* BOTÕES */
 button{
   border-radius:14px;
   border:1px solid rgba(255,255,255,.10);
@@ -763,7 +733,6 @@ button:hover{
 }
 .btn-primary:hover{background:var(--accent2)}
 
-/* AÇÕES */
 .actions{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -771,7 +740,6 @@ button:hover{
 }
 .actions button{height:46px}
 
-/* RESPONSIVO */
 @media (max-width: 1100px){
   .cards{grid-template-columns:repeat(2,1fr)}
   .actions{grid-template-columns:repeat(2,1fr)}
@@ -803,7 +771,6 @@ button:hover{
   .actions{grid-template-columns:1fr}
 }
 
-/* cria espaçamento e linha antes do último item do menu */
 .nav a:last-of-type{
   margin-top:14px;
   position:relative;
@@ -819,14 +786,8 @@ button:hover{
   background:rgba(255,255,255,.06);
 }
 
-/* Tema claro/escuro via data-theme no <html> */
 :root[data-theme="dark"] { color-scheme: dark; }
 :root[data-theme="light"] { color-scheme: light; }
-
-/* =========================================================
-   ✅ PATCH TEMA CLARO — Dashboard (IDÊNTICO AO ATENDIMENTO)
-   Cole no FINAL do style_dashboard.css (já está aqui)
-========================================================= */
 
 :root[data-theme="light"]{
   --bg:#f6f7fb;
@@ -840,7 +801,6 @@ button:hover{
   --success:#2bd576;
 }
 
-/* fundo e texto base */
 :root[data-theme="light"] body{
   background:
     radial-gradient(1200px 700px at 30% 0%, rgba(255,122,0,.10), transparent 55%),
@@ -849,7 +809,6 @@ button:hover{
   color: var(--text) !important;
 }
 
-/* sidebar/topbar */
 :root[data-theme="light"] .sidebar{
   background: linear-gradient(180deg, #ffffff 0%, #f3f5fb 100%) !important;
   border-right: 1px solid var(--border) !important;
@@ -890,7 +849,6 @@ button:hover{
   color: var(--text) !important;
 }
 
-/* botões topo (icon-btn) */
 :root[data-theme="light"] .icon-btn{
   border-color: rgba(0,0,0,.10) !important;
   background: rgba(0,0,0,.03) !important;
@@ -904,12 +862,10 @@ button:hover{
   opacity: .9 !important;
 }
 
-/* subtítulo */
 :root[data-theme="light"] .subtitle{
   color: var(--muted2) !important;
 }
 
-/* cards e boxes */
 :root[data-theme="light"] .card,
 :root[data-theme="light"] .box{
   background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72)) !important;
@@ -927,7 +883,6 @@ button:hover{
   border-color: rgba(0,0,0,.10) !important;
 }
 
-/* botões gerais */
 :root[data-theme="light"] button{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -942,11 +897,6 @@ button:hover{
   color: #0b0c0e !important;
 }
 
-/* =========================================================
-   TOPBAR ACTIONS — IGUAL ATENDIMENTO
-   (cole no FINAL do style_dashboard.css)
-========================================================= */
-
 .top-actions{
   display:flex;
   align-items:center;
@@ -956,7 +906,7 @@ button:hover{
 .icon-btn{
   width:42px;
   height:42px;
-  padding:0 !important;       /* impede o botão global de “engordar” */
+  padding:0 !important;      
   border-radius:14px;
   border:1px solid rgba(255,255,255,.08);
   background:rgba(255,255,255,.03);
@@ -978,10 +928,8 @@ button:hover{
   opacity:.9;
 }
 
-/* (opcional) se você ainda tiver regras antigas da .icons, pode neutralizar */
 .topbar .icons{ display:none; }
 
-/* ===== Logo da Sidebar (substitui o avatar "A") ===== */
 .avatar.avatar-logo{
   background: transparent !important;
   border: none !important;
@@ -1004,24 +952,16 @@ button:hover{
   display:block;
 }
 
-/* =========================================================
-   ✅ OVERRIDE — 5 CARDS NA MESMA LINHA (Dashboard)
-   Cole no FINAL do style_dashboard.css
-========================================================= */
-
-/* 5 cards sempre (desktop) */
 .cards{
   display:grid !important;
   grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   gap:14px !important;
 }
 
-/* impede o card de estourar e quebrar */
 .card{
   min-width:0 !important;
 }
 
-/* se sua tela for menor, aí sim quebra (responsivo) */
 @media (max-width: 1200px){
   .cards{
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
