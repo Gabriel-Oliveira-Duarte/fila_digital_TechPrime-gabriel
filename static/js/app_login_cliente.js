@@ -1,4 +1,3 @@
-// ================= HELPERS =================
 function getParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
@@ -8,18 +7,14 @@ function getFilaId() {
 }
 
 function getNextPage() {
-  // vem do QR: next=Fila_cliente.html
   return getParam("next") || "Fila_cliente.html";
 }
 
-// Base (funciona em localhost e ngrok)
 const ORIGIN = window.location.origin;
 const TEMPLATES_BASE = (window.TEMPLATES_BASE || (ORIGIN + "/templates/"));
 
-// ✅ storage por ABA (não conflita entre abas)
 const STORE = sessionStorage;
 
-// ================= ELEMENTOS =================
 const form = document.getElementById("form");
 const nomeInput = document.getElementById("nome");
 const errorEl = document.getElementById("error");
@@ -45,12 +40,10 @@ const btnClient = document.getElementById("btnClient");
   }
 })();
 
-// ================= VALIDAÇÃO =================
 function nomeValido(nome) {
   return nome && nome.trim().length >= 3;
 }
 
-// ================= ABRIR SUCESSO =================
 function abrirSucesso(nome, posicao) {
   if (successName) successName.textContent = nome;
   if (queueNumber) queueNumber.textContent = `#${String(posicao || 1).padStart(3, "0")}`;
@@ -61,7 +54,6 @@ function abrirSucesso(nome, posicao) {
   document.body.classList.add("lock");
 }
 
-// ================= IR PARA FILA =================
 function irParaFila() {
   const filaId = getFilaId();
   const next = (getNextPage() || "Fila_cliente.html").trim();
@@ -73,15 +65,14 @@ function irParaFila() {
 
   let urlFinal;
 
-  // URL completa (ngrok, etc.)
   if (/^https?:\/\//i.test(next)) {
     urlFinal = new URL(next);
   }
-  // Caminho absoluto (/templates/...)
+
   else if (next.startsWith("/")) {
     urlFinal = new URL(window.location.origin + next);
   }
-  // Só nome do arquivo
+
   else {
     urlFinal = new URL(`/templates/${next}`, window.location.origin);
   }
@@ -90,7 +81,6 @@ function irParaFila() {
   window.location.href = urlFinal.toString();
 }
 
-// ================= SUBMIT (ÚNICO) =================
 let isSubmitting = false;
 
 form?.addEventListener("submit", async (e) => {
@@ -179,10 +169,8 @@ form?.addEventListener("submit", async (e) => {
 
    const posicao = Number(data.posicao || data.pos || data.numero || 1);
 
-    // opcional: ainda atualiza o número localmente
     queueNumber && (queueNumber.textContent = `#${String(posicao).padStart(3, "0")}`);
 
-    // ✅ vai direto para acompanhar fila
     irParaFila();
     return;
 
@@ -206,13 +194,8 @@ form?.addEventListener("submit", async (e) => {
   }
 });
 
-// ================= EVENTOS =================
 btnAcompanhar?.addEventListener("click", irParaFila);
 
-// ✅ REMOVIDO: editar nome por completo (não registra listener)
-// Se ainda existir botão no HTML, ele não fará nada.
-
-// ================= FIX: texto do botão laranja =================
 (function fixBtnOrangeTextColor(){
   function apply(){
     const ids = ["btnClient", "btnAcompanhar"];
