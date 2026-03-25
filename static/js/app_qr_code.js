@@ -1,18 +1,5 @@
-/* =========================================================
-   app_qr_code.js — COMPLETO, ATUALIZADO E CORRIGIDO
-   ✅ Remove duplicações do nome do estabelecimento
-   ✅ Corrige erro de sintaxe (tinha um "+" perdido)
-   ✅ Imprimir SEM popup/SEM about:blank (print area no próprio DOM)
-   ✅ Mantém copiar/baixar/abrir link e lista de filas
-   ✅ PADRÃO AO VIVO: badge ABERTA/FECHADA (ícones)
-   ✅ EXCLUIDA NÃO APARECE NO QR CODE
-========================================================= */
-
 console.log("[QR] app_qr_code.js carregou");
 
-// ===============================
-// ESTABELECIMENTO (nome dinâmico)
-// ===============================
 (function syncNomeEstab() {
   const ja = localStorage.getItem("nomeEstabelecimento");
   if (ja && ja.trim()) return;
@@ -40,7 +27,6 @@ function preencherNomeNoTopo() {
   if (header) header.title = `Estabelecimento: ${nome || "—"}`;
 }
 
-// ✅ evita quebrar HTML se nome/link tiver caracteres especiais
 function escapeHtml(str) {
   return String(str ?? "")
     .replaceAll("&", "&amp;")
@@ -50,24 +36,19 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
-// ================= BASES =================
 const ORIGIN = window.location.origin;
 const API_BASE = ORIGIN;
 
-// ✅ Vai ser preenchido com o NGROK salvo no backend (se existir)
 let PUBLIC_ORIGIN = "";
 
-// ================= ELEMENTOS =================
 let sidebar, backdrop, menuBtn;
 let filaList, filaNomeTop, filaLink, btnOpenLink;
 let qrBox, btnBaixar, btnCopiar, btnImprimir, toast;
 
-// ================= ESTADO =================
 let filas = [];
 let filaSelecionada = null;
 let linkSelecionado = "";
 
-// ================= HELPERS =================
 function showToast(msg) {
   if (!toast) return;
   toast.textContent = msg;
@@ -133,7 +114,6 @@ function isExcluidaStatus(s) {
   return up === "EXCLUIDA" || up === "EXCLUÍDA";
 }
 
-// ================= ✅ Pega NGROK salvo no backend =================
 async function carregarPublicUrl() {
   try {
     const res = await fetch(`${API_BASE}/api/public-url`, { cache: "no-store" });
@@ -146,11 +126,9 @@ async function carregarPublicUrl() {
       PUBLIC_ORIGIN = url;
     }
   } catch {
-    // se falhar, segue com origin local mesmo
   }
 }
 
-// ================= LINK PARA CLIENTE (QR) =================
 function gerarLinkCliente(filaId) {
   const base = (PUBLIC_ORIGIN || ORIGIN).replace(/\/+$/, "");
 
@@ -161,12 +139,10 @@ function gerarLinkCliente(filaId) {
   return url.toString();
 }
 
-// ================= BADGE (IGUAL AO AO VIVO) =================
 function badgeFila(status) {
   const s = String(status || "").toUpperCase().trim();
 
   if (s === "ABERTA") {
-    // ✅ usa suas classes de cor do QR
     return `<span class="badge badge-aberta"><i class="bi bi-unlock"></i> ABERTA</span>`;
   }
   if (s === "FECHADA") {
@@ -175,7 +151,6 @@ function badgeFila(status) {
   return `<span class="badge">${escapeHtml(s || "-")}</span>`;
 }
 
-// ================= LISTA DE FILAS =================
 function renderLista() {
   if (!filaList) return;
 
@@ -218,7 +193,6 @@ function renderLista() {
   });
 }
 
-// ================= RENDER PRINCIPAL =================
 function renderTudo() {
   renderLista();
 
@@ -239,7 +213,6 @@ function renderTudo() {
   renderQr(linkSelecionado);
 }
 
-// ================= AÇÕES =================
 function abrirLink() {
   if (!linkSelecionado) return;
   window.open(linkSelecionado, "_blank", "noopener");
@@ -281,9 +254,6 @@ function baixarQr() {
   showToast("Baixado!");
 }
 
-/* =========================================================
-   ✅ IMPRIMIR DEFINITIVO (SEM POPUP / SEM about:blank)
-========================================================= */
 function imprimirQr() {
   const img = qrBox?.querySelector("img");
   const canvas = qrBox?.querySelector("canvas");
@@ -347,7 +317,6 @@ function imprimirQr() {
   window.print();
 }
 
-// ================= CARREGAR FILAS =================
 async function carregarFilas() {
   try {
     const estabIdRaw = localStorage.getItem("estabelecimento_id");
@@ -400,7 +369,6 @@ async function carregarFilas() {
     else if (data && Array.isArray(data.data)) lista = data.data;
     else lista = [];
 
-    // ✅ normaliza e REMOVE EXCLUIDAS (não aparecem no QR)
     filas = lista
       .map(normalizarFila)
       .filter((f) => !isExcluidaStatus(f.status));
@@ -416,7 +384,6 @@ async function carregarFilas() {
       return;
     }
 
-  // ✅ se vier filaId na URL, seleciona ela primeiro
   const filaIdUrl = new URLSearchParams(window.location.search).get("filaId");
 
   if (filaIdUrl) {
@@ -446,7 +413,6 @@ async function carregarFilas() {
   }
 }
 
-// ================= SIDEBAR MOBILE =================
 function setupSidebar() {
   sidebar = document.getElementById("sidebar");
   backdrop = document.getElementById("backdrop");
@@ -465,7 +431,6 @@ function setupSidebar() {
   backdrop?.addEventListener("click", closeSidebar);
 }
 
-// ================= INIT =================
 document.addEventListener("DOMContentLoaded", async () => {
   preencherNomeNoTopo();
 
