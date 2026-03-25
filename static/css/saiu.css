@@ -4,7 +4,6 @@
 html,body{ height:100%; }
 
 :root{
-  /* base */
   --bg:#070707;
   --text:#e9e9ea;
   --muted:rgba(233,233,234,.72);
