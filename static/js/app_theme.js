@@ -1,6 +1,5 @@
-// /static/js/app_theme.js
 (() => {
-  const KEY = "theme"; // "dark" | "light"
+  const KEY = "theme"; 
 
   function getTheme() {
     const t = (localStorage.getItem(KEY) || "").toLowerCase();
@@ -10,16 +9,13 @@
   function setTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
 
-    // body classes (se algum CSS seu depender disso)
     document.body.classList.remove("theme-dark", "theme-light");
     document.body.classList.add(theme === "dark" ? "theme-dark" : "theme-light");
 
-    // ajuda select/dropdown no Chrome
     document.documentElement.style.colorScheme = theme;
 
     localStorage.setItem(KEY, theme);
 
-    // atualiza ícone em TODOS os botões existentes
     document.querySelectorAll("#btnTheme, #btnTema, [data-theme-toggle]").forEach((btn) => {
       const icon = btn.querySelector("i");
       if (icon) icon.className = theme === "dark" ? "bi bi-moon" : "bi bi-sun";
