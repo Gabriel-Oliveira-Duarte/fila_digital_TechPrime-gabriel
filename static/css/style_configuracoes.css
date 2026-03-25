@@ -25,7 +25,6 @@ body{
 
 .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
 
-/* Sidebar */
 .sidebar{
   background:linear-gradient(180deg, #0e0f12 0%, #0a0b0d 100%);
   border-right:1px solid var(--border);
@@ -33,12 +32,14 @@ body{
   padding:18px 14px;
   position:sticky;top:0;height:100vh;
 }
+
 .brand{
   display:flex;align-items:center;gap:12px;
   padding:6px 10px 16px 10px;
   border-bottom:1px solid var(--border);
   margin-bottom:14px;
 }
+
 .avatar{
   width:44px;height:44px;border-radius:14px;
   background:rgba(255,122,0,.16);
@@ -48,6 +49,7 @@ body{
   border:1px solid rgba(255,122,0,.25);
   box-shadow:0 10px 30px rgba(255,122,0,.12);
 }
+
 .brand-meta{display:flex;flex-direction:column;line-height:1.15}
 .brand-name{font-weight:800;font-size:14px}
 .brand-sub{font-size:12px;color:var(--muted2);margin-top:2px}
@@ -77,10 +79,8 @@ body{
   text-align:center;
 }
 
-/* Content */
 .content{display:flex;flex-direction:column;min-width:0}
 
-/* Topbar */
 .topbar{
   height:64px;display:flex;align-items:center;justify-content:space-between;
   padding:0 22px;
@@ -112,16 +112,13 @@ body{
 .icon-btn i{font-size:18px;opacity:.9}
 .mobile-top{display:none;align-items:center;gap:10px}
 
-/* Backdrop mobile */
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:none}
 .backdrop.show{display:block}
 
-/* Page */
 .page{padding:22px;max-width:1280px;width:100%}
 h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 .subtitle{color:var(--muted2);margin:0 0 18px;font-size:14px}
 
-/* Grid */
 .grid{
   display:grid;
   grid-template-columns: 1fr 1fr;
@@ -129,7 +126,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   align-items:start;
 }
 
-/* Panel */
 .panel{
   border-radius:16px;
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
@@ -156,7 +152,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   font-weight:900;
 }
 
-/* Form */
 .form{display:flex;flex-direction:column;gap:14px}
 .field{display:flex;flex-direction:column;gap:8px}
 .field label{font-size:12px;color:rgba(255,255,255,.80);font-weight:700}
@@ -243,7 +238,6 @@ input:focus{
 }
 .btn-danger:hover{background:rgba(255,77,77,.22)}
 
-/* Switch */
 .switch{position:relative;display:inline-block;width:42px;height:24px;flex:0 0 auto}
 .switch input{display:none}
 .slider{
@@ -271,7 +265,6 @@ input:focus{
   background:var(--accent);
 }
 
-/* Responsive */
 @media (max-width: 1100px){
   .grid{grid-template-columns:1fr}
   .row-2{grid-template-columns:1fr}
@@ -294,7 +287,6 @@ input:focus{
   h1{font-size:28px}
 }
 
-/* Tema claro/escuro via data-theme no <html> */
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
@@ -303,7 +295,6 @@ input:focus{
   color-scheme: light;
 }
 
-/* Exemplo básico (você pode adaptar pro seu design) */
 :root[data-theme="light"] body {
   background: #f5f6f8;
   color: #111;
@@ -322,11 +313,6 @@ input:focus{
   color: rgba(0,0,0,.65);
 }
 
-/* =========================================================
-   ✅ PATCH TEMA CLARO — Configurações (igual Atendimento)
-   Cole no FINAL do style_configuraçoes.css
-========================================================= */
-
 :root[data-theme="light"]{
   --bg:#f6f7fb;
   --border:rgba(0,0,0,.10);
@@ -340,7 +326,6 @@ input:focus{
   --danger:#ff4d4d;
 }
 
-/* fundo e texto base */
 :root[data-theme="light"] body{
   background:
     radial-gradient(1200px 700px at 30% 0%, rgba(255,122,0,.10), transparent 55%),
@@ -349,7 +334,6 @@ input:focus{
   color: var(--text) !important;
 }
 
-/* sidebar/topbar */
 :root[data-theme="light"] .sidebar{
   background: linear-gradient(180deg, #ffffff 0%, #f3f5fb 100%) !important;
   border-right: 1px solid var(--border) !important;
@@ -382,7 +366,6 @@ input:focus{
   color: var(--text) !important;
 }
 
-/* botões topo */
 :root[data-theme="light"] .icon-btn{
   border-color: rgba(0,0,0,.10) !important;
   background: rgba(0,0,0,.03) !important;
@@ -394,7 +377,6 @@ input:focus{
 }
 :root[data-theme="light"] .icon-btn i{ opacity:.9 !important; }
 
-/* painéis */
 :root[data-theme="light"] .panel{
   background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.72)) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -402,17 +384,14 @@ input:focus{
   color: var(--text) !important;
 }
 
-/* 🔥 garante legibilidade de tudo dentro do painel */
 :root[data-theme="light"] .panel *{
   color: var(--text) !important;
 }
 
-/* preserva cores especiais */
 :root[data-theme="light"] .panel .panel-ico{
   color: var(--accent) !important;
 }
 
-/* subtítulos / muted */
 :root[data-theme="light"] .subtitle{
   color: var(--muted2) !important;
 }
@@ -421,7 +400,6 @@ input:focus{
   color: rgba(18,19,24,.60) !important;
 }
 
-/* inputs */
 :root[data-theme="light"] input{
   background: rgba(255,255,255,.92) !important;
   color: rgba(18,19,24,.90) !important;
@@ -431,7 +409,6 @@ input:focus{
   color: rgba(18,19,24,.45) !important;
 }
 
-/* cards prefs/danger */
 :root[data-theme="light"] .pref{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.08) !important;
@@ -444,7 +421,6 @@ input:focus{
   border-color: rgba(255,77,77,.20) !important;
 }
 
-/* botões */
 :root[data-theme="light"] .btn{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -459,11 +435,6 @@ input:focus{
   color: #0b0c0e !important;
 }
 
-/* =========================================================
-   ✅ FIX LEGIBILIDADE (LIGHT) — Configurações
-   Cole no FINAL do style_configuraçoes.css
-========================================================= */
-
 :root[data-theme="light"] .page,
 :root[data-theme="light"] .page h1{
   color:#121318 !important;
@@ -473,13 +444,11 @@ input:focus{
   color:rgba(18,19,24,.62) !important;
 }
 
-/* Títulos e cabeçalhos dos painéis */
 :root[data-theme="light"] .panel-head h3,
 :root[data-theme="light"] .panel-title h3{
   color:#121318 !important;
 }
 
-/* Labels e textos auxiliares */
 :root[data-theme="light"] .field label{
   color:rgba(18,19,24,.78) !important;
 }
@@ -494,7 +463,6 @@ input:focus{
   color:rgba(18,19,24,.60) !important;
 }
 
-/* Inputs (o valor estava ficando claro) */
 :root[data-theme="light"] input{
   background:rgba(255,255,255,.92) !important;
   color:rgba(18,19,24,.92) !important;
@@ -504,24 +472,20 @@ input:focus{
   color:rgba(18,19,24,.45) !important;
 }
 
-/* Cards das preferências */
 :root[data-theme="light"] .pref{
   background:rgba(0,0,0,.03) !important;
   border-color:rgba(0,0,0,.10) !important;
 }
 
-/* Divisor */
 :root[data-theme="light"] .divider{
   background:rgba(0,0,0,.10) !important;
 }
 
-/* “Sair da conta” (danger) */
 :root[data-theme="light"] .danger{
   background:rgba(255,77,77,.08) !important;
   border-color:rgba(255,77,77,.22) !important;
 }
 
-/* Botões */
 :root[data-theme="light"] .btn{
   color:rgba(18,19,24,.92) !important;
   background:rgba(0,0,0,.03) !important;
@@ -531,19 +495,16 @@ input:focus{
   background:rgba(0,0,0,.05) !important;
 }
 :root[data-theme="light"] .btn-primary{
-  color:#0b0c0e !important; /* texto preto no laranja */
+  color:#0b0c0e !important;
 }
 
-/* ===== Logo da Sidebar (substitui o avatar "A") ===== */
 .avatar.avatar-logo{
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-
   display:flex !important;
   align-items:center !important;
   justify-content:center !important;
-
   width:44px;
   height:44px;
   border-radius:14px;
@@ -557,25 +518,13 @@ input:focus{
   display:block;
 }
 
-/* =========================================================
-   ✅ FIX: Telefone/WhatsApp não ficar “menor”
-   Cole no FINAL do style_configuraçoes.css
-========================================================= */
-
-/* se .row-2 tiver só 1 .field, vira 1 coluna */
 .row-2:has(.field:only-child){
   grid-template-columns: 1fr !important;
 }
 
-/* fallback caso o navegador não suporte :has() (alguns antigos) */
 @supports not selector(:has(*)){
   .row-2{ grid-template-columns: 1fr !important; }
 }
-
-/* =========================================================
-   ✅ FIX: Botão "Salvar alterações" ficar laranja no tema light
-   Cole no FINAL do style_configuraçoes.css
-========================================================= */
 
 :root[data-theme="light"] .btn.btn-primary,
 :root[data-theme="light"] button.btn.btn-primary{
