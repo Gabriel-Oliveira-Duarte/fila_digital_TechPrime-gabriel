@@ -5,24 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fila ao Vivo - Painel</title>
 
-  <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/style_theme.css">
-  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-  <!-- Base theme (opcional, se você já tiver igual no Atendimento) -->
-  <!-- <link rel="stylesheet" href="/static/css/theme_base.css?v=20260301_1"> -->
 
-  <!-- CSS exclusivo -->
+
 <link rel="stylesheet" href="/static/css/style_fila_ao_vivo.css?v=20260304_99">
 </head>
 
 <body>
   <div class="app">
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="avatar">
@@ -49,12 +44,9 @@
       <div class="sidebar-footer">© 2026 ANDA LOGO</div>
     </aside>
 
-    <!-- BACKDROP (mobile) -->
     <div class="backdrop" id="backdrop"></div>
 
-    <!-- CONTENT -->
     <main class="content">
-      <!-- TOPBAR -->
       <header class="topbar">
         <div class="mobile-top">
           <button id="menuBtn" class="icon-btn" aria-label="Abrir menu">
@@ -62,14 +54,12 @@
           </button>
         </div>
 
-        <!-- ✅ DINÂMICO -->
         <div class="estab" id="estabHeader" title="Estabelecimento">
           <span class="dot"></span>
           <span>Estabelecimento:</span>
           <b>&nbsp;<span id="nomeEstabelecimento">—</span></b>
         </div>
 
-        <!-- ✅ PADRÃO ATENDIMENTO (botões iguais) -->
         <div class="top-actions">
             <i class="bi bi-bell"></i>
           </button>
@@ -80,7 +70,6 @@
         </div>
       </header>
 
-      <!-- PAGE -->
       <section class="page">
         <div class="page-head">
           <div>
@@ -94,8 +83,7 @@
           </div>
         </div>
 
-        <!-- Seletor de fila -->
-<!-- Filtros + Lista de filas (SEM select) -->
+
 <div class="queues-toolbar">
   <div class="queues-filters" role="tablist" aria-label="Filtro de filas">
     <button class="chip active" id="filtroAbertas" type="button">
@@ -118,15 +106,12 @@
   </div>
 </div>
 
-<!-- Lista de filas do BANCO -->
 <div class="queues-grid" id="filasGrid">
-  <!-- cards renderizados via JS -->
 </div>
 
 
 
         <div class="queue-list" id="queueList">
-          <!-- Itens renderizados via JS -->
         </div>
       </section>
     </main>
