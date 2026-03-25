@@ -1,7 +1,5 @@
-// ================= CONFIG =================
 const API_BASE = window.location.origin;
 
-// ================= HELPERS =================
 function getParam(name){
   return new URLSearchParams(location.search).get(name);
 }
@@ -25,24 +23,18 @@ function getFilaId(){
   return new URLSearchParams(location.search).get("filaId");
 }
 
-
-
-// ✅ Nome do cliente SEM conflito entre abas:
-// prioridade: (fila+cliente) -> (fila) -> null
 function getClienteNome(filaId){
   const cid =
     Number(sessionStorage.getItem(`cliente_session_${filaId}`) || 0) ||
     Number(localStorage.getItem(`cliente_session_${filaId}`) || 0) ||
     Number(getParam("clienteId") || 0);
 
-  // 1) nome por FILA + CLIENTE
   if (filaId && cid) {
     const k = `cliente_nome_${filaId}_${cid}`;
     const n = sessionStorage.getItem(k) || localStorage.getItem(k);
     if (n && n.trim()) return n.trim();
   }
 
-  // 2) nome por FILA (prioriza sessionStorage da aba)
   if (filaId) {
     const n2 = sessionStorage.getItem(`cliente_nome_${filaId}`) || localStorage.getItem(`cliente_nome_${filaId}`);
     if (n2 && n2.trim()) return n2.trim();
@@ -55,12 +47,10 @@ function setClienteNome(filaId, clienteId, nome){
   const n = (nome || "").trim();
   if (!filaId || !clienteId || !n) return;
 
-  // grava por FILA+CLIENTE (não conflita)
   const k = `cliente_nome_${filaId}_${clienteId}`;
   try {
     localStorage.setItem(k, n);
     sessionStorage.setItem(k, n);
-    // e também por FILA (pra telas que ainda usam só fila)
     sessionStorage.setItem(`cliente_nome_${filaId}`, n);
     localStorage.setItem(`cliente_nome_${filaId}`, n);
   } catch {}
@@ -74,9 +64,6 @@ function preencherNomeClienteNoTopo(){
 
 document.addEventListener("DOMContentLoaded", preencherNomeClienteNoTopo);
 
-// ❌ NÃO usar window.storage pra CLIENTE_NOME (isso causava sobrescrever entre abas)
-
-// ================= GEO HELPERS =================
 function haversineMeters(lat1, lon1, lat2, lon2){
   const R = 6371000;
   const toRad = (x) => x * Math.PI / 180;
@@ -102,7 +89,6 @@ async function fetchFilaInfo(filaId){
   return res.json();
 }
 
-// ================= ELEMENTOS =================
 const elPos = document.getElementById("posicao");
 const elFrente = document.getElementById("aFrente");
 const elTempoMedio = document.getElementById("tempoMedio");
@@ -120,7 +106,6 @@ const btnGeo = document.getElementById("btnGeo");
 const btnAtualizar = document.getElementById("btnAtualizar");
 const btnSair = document.getElementById("btnSair");
 
-// ================= Estado =================
 const filaId = getFilaId();
 if (!filaId){
   alert("Link inválido: falta filaId. Acesse pela leitura do QR Code.");
@@ -130,7 +115,6 @@ if (!filaId){
 
 const SESSION_KEY = `cliente_session_${filaId}`;
 
-// ✅ sessão por aba (sessionStorage) + fallback localStorage
 let clienteId =
   Number(sessionStorage.getItem(SESSION_KEY) || 0) ||
   Number(localStorage.getItem(SESSION_KEY) || 0);
@@ -144,7 +128,6 @@ let filaInfoCache = null;
 let encerramentoModo = null;
 let ultimoStatusConhecido = null;
 
-// ================= MODAL PADRONIZADO =================
 function ensureEndModal() {
   if (!document.getElementById("endModalStyle")) {
     const style = document.createElement("style");
@@ -263,7 +246,6 @@ function encerrarETravar(mode, nome){
   clearTimeout(wsRetryTimer);
   clearInterval(fallbackTimer);
 
-  // auto saída para fila fechada/excluída
   if (mode === "fila_fechada" || mode === "fila_excluida") {
     setTimeout(() => {
       forceExitToSaiu();
@@ -271,7 +253,6 @@ function encerrarETravar(mode, nome){
   }
 }
 
-// ✅ Sai para saiu.html e limpa APENAS as chaves da fila/cliente atual
 function forceExitToSaiu(){
   const target = `${window.location.origin}/templates/saiu.html`;
 
@@ -286,22 +267,16 @@ function forceExitToSaiu(){
   clearInterval(fallbackTimer);
 
   try {
-    // remove sessão desta fila (aba + fallback)
     sessionStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(SESSION_KEY);
 
-    // remove fila_cliente_id desta fila
     localStorage.removeItem(`fila_cliente_id_${filaId}`);
 
-    // NÃO remover cliente_nome_{filaId} global da fila pode afetar outra aba;
-    // mas pode remover o da ABA:
     sessionStorage.removeItem(`cliente_nome_${filaId}`);
 
-    // se tiver clienteId, remove a chave específica desta pessoa:
     if (clienteId) {
       sessionStorage.removeItem(`cliente_nome_${filaId}_${clienteId}`);
-      // opcional: pode manter no localStorage (histórico), mas se quiser limpar:
-      // localStorage.removeItem(`cliente_nome_${filaId}_${clienteId}`);
+
     }
   } catch {}
 
@@ -309,7 +284,6 @@ function forceExitToSaiu(){
   setTimeout(() => window.location.replace(target), 250);
 }
 
-// ================= Render =================
 function renderStatus(payload){
   const stRaw = payload?.cliente?.status ?? payload?.status ?? "aguardando";
   const st = String(stRaw).toLowerCase();
@@ -349,7 +323,6 @@ function renderStatus(payload){
   if (elUlt) elUlt.textContent = horaAgora();
   if (payload.fila_raio_m && elFilaRaio) elFilaRaio.textContent = `${payload.fila_raio_m}m`;
 
-  // atualiza topo com nome correto desta sessão
   preencherNomeClienteNoTopo();
 }
 
@@ -367,7 +340,6 @@ async function atualizarStatus({ silent=false } = {}) {
     return;
   }
 
-// ✅ backend pode retornar encerrado=true
 if (data && data.encerrado === true) {
   const motivo = String(data.motivo || "").toLowerCase().trim();
 
@@ -420,9 +392,6 @@ if (data && data.encerrado === true) {
     filaClienteIdAtual = fcId;
     localStorage.setItem(`fila_cliente_id_${filaId}`, String(fcId));
   }
-
-  // tenta atualizar nome localmente, se backend mandou algum nome (não está mandando hoje, ok)
-  // setClienteNome(filaId, clienteId, data?.cliente?.nome);
 
   renderStatus(data);
   if (!silent) showToast("Atualizado!");
@@ -482,7 +451,6 @@ async function entrarNaFila(){
 
     clienteId = Number(data.cliente_id || 0);
 
-    // sessão por ABA
     if (clienteId) {
       sessionStorage.setItem(SESSION_KEY, String(clienteId));
       localStorage.setItem(SESSION_KEY, String(clienteId));
@@ -511,7 +479,6 @@ async function entrarNaFila(){
   });
 }
 
-// ================= GEO =================
 function setRaioStatus(ok){
   if (!elPillRaio) return;
   elPillRaio.classList.toggle("ok", ok);
@@ -624,7 +591,6 @@ if (!geoResp.ok) {
   );
 }
 
-// ================= SAIR (manual) =================
 let isExiting = false;
 
 async function apiSairDaFilaSeguro() {
@@ -632,7 +598,6 @@ async function apiSairDaFilaSeguro() {
 
   const url = `${API_BASE}/api/filas/${filaId}/cliente/${clienteId}/sair?origem=botao`;
 
-  // tenta com fetch normal (mais confiável) e só depois sai
   try {
     await fetch(url, {
       method: "POST",
@@ -642,12 +607,10 @@ async function apiSairDaFilaSeguro() {
     return;
   } catch {}
 
-  // fallback keepalive
   try {
     await fetch(url, { method: "POST", keepalive: true });
   } catch {}
 
-  // último fallback
   try {
     const blob = new Blob(["{}"], { type: "application/json" });
     navigator.sendBeacon?.(url, blob);
@@ -679,11 +642,9 @@ async function sairDaFila(evt){
 btnSair?.addEventListener("touchend", sairDaFila, { capture: true });
 btnSair?.addEventListener("click", sairDaFila, { capture: true });
 
-// ================= LISTENERS =================
 btnGeo?.addEventListener("click", atualizarLocalizacao);
 btnAtualizar?.addEventListener("click", () => atualizarStatus({ silent:false }));
 
-// ================= WEBSOCKET (TEMPO REAL) =================
 let ws = null;
 let wsPingTimer = null;
 let wsRetryTimer = null;
