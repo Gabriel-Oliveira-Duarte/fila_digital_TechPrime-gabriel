@@ -22,7 +22,6 @@ function emailValido(v){
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || "").trim());
 }
 
-// ✅ postJSON mais robusto: pega JSON ou TEXTO e mostra a mensagem real
 async function postJSON(path, data){
   const r = await fetch(API_BASE + path, {
     method: "POST",
@@ -65,19 +64,17 @@ function goToReset(prefillEmail = ""){
   if (email2.value) code.focus();
 }
 
-// ✅ Agora: se vier ?email=..., preenche e fica na ETAPA 1 (Enviar código)
 (function init(){
   const params = new URLSearchParams(window.location.search);
   const em = (params.get("email") || "").trim();
 
   if (em){
-    goToSend(em); // <-- mudou aqui
+    goToSend(em); 
   } else {
     goToSend("");
   }
 })();
 
-// Toggle senha
 function bindToggle(btnId, inputEl){
   const btn = document.getElementById(btnId);
   if (!btn) return;
@@ -88,19 +85,16 @@ function bindToggle(btnId, inputEl){
 bindToggle("toggle1", newPass);
 bindToggle("toggle2", newPass2);
 
-// Navegação
 document.getElementById("goLogin").addEventListener("click", () => {
   window.location.href = "/templates/cnpj.html";
 });
 document.getElementById("goStepReset").addEventListener("click", () => goToReset(email.value));
 document.getElementById("backSend").addEventListener("click", () => goToSend(email2.value));
 
-// Somente números no código
 code.addEventListener("input", () => {
   code.value = code.value.replace(/\D/g, "").slice(0, 6);
 });
 
-// Enviar código
 btnSend.addEventListener("click", async () => {
   sendError.textContent = "";
 
@@ -117,7 +111,6 @@ btnSend.addEventListener("click", async () => {
   }
 });
 
-// Reenviar
 document.getElementById("resend").addEventListener("click", async () => {
   resetError.textContent = "";
 
@@ -133,7 +126,6 @@ document.getElementById("resend").addEventListener("click", async () => {
   }
 });
 
-// Alterar senha
 btnReset.addEventListener("click", async () => {
   resetError.textContent = "";
 
