@@ -1,13 +1,7 @@
-/* =========================
-   PATCH MODAIS - ANDALOGO
-   Centralização + z-index + scroll lock
-========================= */
-
 body.lock {
   overflow: hidden;
 }
 
-/* ---------- Modal "compareceu?" ---------- */
 .confirm-modal{
   position: fixed;
   inset: 0;
@@ -103,7 +97,6 @@ body.lock {
   opacity: .72;
 }
 
-/* ---------- Overlay finalizado/cancelado ---------- */
 .finishOverlay{
   position: fixed;
   inset: 0;
@@ -138,7 +131,6 @@ body.lock {
   animation: modalPop .18s ease;
 }
 
-/* ---------- Modal "Chamando cliente" ---------- */
 .call-modal{
   position: fixed;
   inset: 0;
