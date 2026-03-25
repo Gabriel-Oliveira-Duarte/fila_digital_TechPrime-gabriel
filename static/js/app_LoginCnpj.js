@@ -1,5 +1,3 @@
-// static/js/app_LoginCnpj.js
-
 const API_BASE = window.location.origin;
 const forgotBtn = document.getElementById("forgotBtn");
 const modeForgot = document.getElementById("modeForgot");
@@ -8,7 +6,6 @@ const forgotError = document.getElementById("forgotError");
 const btnForgot = document.getElementById("btnForgot");
 const backLoginBtn = document.getElementById("backLoginBtn");
 
-// ================= FETCH =================
 async function postJSON(path, data) {
   const url = API_BASE + path;
 
@@ -44,7 +41,6 @@ async function getJSON(url) {
   return data;
 }
 
-// ================= HELPERS =================
 function onlyDigits(v) { return (v || "").replace(/\D/g, ""); }
 
 function emailValido(email) {
@@ -53,7 +49,6 @@ function emailValido(email) {
 
 function normalizarEmail(email) { return (email || "").trim().toLowerCase(); }
 
-// ================= ELEMENTOS (LOGIN/CADASTRO) =================
 const bizError = document.getElementById("bizError");
 const signupError = document.getElementById("signupError");
 const signupError2 = document.getElementById("signupError2");
@@ -88,7 +83,6 @@ const signupBizEmail = document.getElementById("signupBizEmail");
 const signupBizPass = document.getElementById("signupBizPass");
 const signupBizPass2 = document.getElementById("signupBizPass2");
 
-// ================= ELEMENTOS (ENDEREÇO) =================
 const addrCep = document.getElementById("addrCep");
 const addrNumero = document.getElementById("addrNumero");
 const addrCompl = document.getElementById("addrCompl");
@@ -130,11 +124,6 @@ function configurarToggleSenha(botao, input) {
 configurarToggleSenha(togglePass, bizPass);
 configurarToggleSenha(toggleSignupPass, signupBizPass);
 
-// ================= UI MODOS =================
-
-// ✅ Força o botão "Esqueceu a senha?" a SEMPRE ir para a página separada
-// ✅ Bloqueia qualquer listener antigo que esteja abrindo o modeForgot
-// === ESQUECEU A SENHA (FORÇAR REDIRECIONAMENTO) ===
 if (forgotBtn) {
   forgotBtn.addEventListener("click", (e) => {
     e.preventDefault();
@@ -147,17 +136,13 @@ if (forgotBtn) {
       : "/templates/recuperar_senha.html";
 
     window.location.assign(url);
-  }, true); // CAPTURE
+  }, true); 
 }
-// ✅ ÚNICA versão (sem duplicar função)
+
 function mostrarApenas(target) {
   [modeBiz, modeBizSignup, modeForgot].forEach(m => m?.classList.add("hidden"));
   target?.classList.remove("hidden");
 }
-
-// ================= FORGOT PASSWORD (NOVO FLUXO) =================
-// ✅ Agora o botão "Esqueceu a senha?" SEMPRE redireciona para a nova página.
-// ✅ Mesmo que modeForgot exista no HTML, ele não será usado.
 
 forgotBtn?.addEventListener("click", (e) => {
   e.preventDefault();
@@ -170,21 +155,17 @@ forgotBtn?.addEventListener("click", (e) => {
   window.location.href = url;
 });
 
-// (mantidos por compatibilidade, mas sem uso)
 backLoginBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   if (forgotError) forgotError.textContent = "";
   mostrarApenas(modeBiz);
 });
 
-// ⚠️ Desativado: envio antigo via modeForgot
-// (deixamos sem listener para não ter dois fluxos e evitar duplicidade)
 if (btnForgot) {
   btnForgot.disabled = true;
   btnForgot.title = "Este fluxo foi substituído pela nova tela de recuperação.";
 }
 
-// ================= UTILIDADES LOGIN =================
 function extrairEstabId(data) {
   const candidatos = [
     data?.estabelecimento_id,
@@ -218,7 +199,6 @@ function salvarNomeEstabelecimento(nome) {
   localStorage.setItem("estabelecimento_nome", n);
 }
 
-// ✅ interpreta flags tipo true/1/"true"/"1"
 function flagTrue(v) {
   if (v === true) return true;
   if (typeof v === "number") return v === 1;
@@ -229,7 +209,6 @@ function flagTrue(v) {
   return false;
 }
 
-// ✅ tenta achar a flag mesmo se backend usar outro nome
 function precisaEndereco(data) {
   return flagTrue(
     data?.needs_address ??
@@ -241,7 +220,6 @@ function precisaEndereco(data) {
   );
 }
 
-// ================= STEPPER =================
 const stepDot1 = document.getElementById("stepDot1");
 const stepDot2 = document.getElementById("stepDot2");
 const stepDot3 = document.getElementById("stepDot3");
@@ -275,7 +253,6 @@ function setStepper(etapa) {
 
 function abrirModoBiz() { mostrarApenas(modeBiz); }
 
-// ✅ agora abre no step que você quiser (padrão 1)
 function abrirModoBizSignup(etapa = 1) {
   mostrarApenas(modeBizSignup);
   mostrarSignupEtapa(etapa);
@@ -293,13 +270,11 @@ function mostrarSignupEtapa(etapa) {
   setStepper(etapa);
 }
 
-// ================= NAVEGAÇÃO =================
 signupBtn?.addEventListener("click", () => abrirModoBizSignup(1));
 signupBackToLogin1?.addEventListener("click", abrirModoBiz);
 goPrevStepBtn?.addEventListener("click", () => mostrarSignupEtapa(1));
 goPrevStepBtn2?.addEventListener("click", () => mostrarSignupEtapa(2));
 
-// ================= VALIDAÇÃO ETAPA 1 =================
 function validarEtapa1() {
   if (!signupBizName?.value.trim()) return "Digite o nome.";
   if (onlyDigits(signupBizCnpj?.value).length !== 14) return "CNPJ inválido.";
@@ -318,7 +293,6 @@ btnSignupContinue?.addEventListener("click", () => {
   mostrarSignupEtapa(2);
 });
 
-// ================= VALIDAÇÃO ETAPA 2 =================
 function validarEtapa2() {
   const email = signupBizEmail.value.trim();
   const p1 = signupBizPass.value;
@@ -330,7 +304,6 @@ function validarEtapa2() {
   return "";
 }
 
-// ================= CADASTRO ETAPA 2 (cria conta) =================
 btnSignupBiz?.addEventListener("click", async () => {
   const msg = validarEtapa2();
   if (msg) {
@@ -373,8 +346,7 @@ btnSignupBiz?.addEventListener("click", async () => {
 
     localStorage.setItem("estabelecimento_id", String(id));
     salvarNomeEstabelecimento(payload.nome);
-
-    // ✅ Vai direto pra etapa 3 (endereço)
+    
     mostrarSignupEtapa(3);
 
   } catch (e) {
@@ -382,7 +354,6 @@ btnSignupBiz?.addEventListener("click", async () => {
   }
 });
 
-// ================= ENDEREÇO: VIA CEP =================
 async function buscarViaCep(cepDigits) {
   const url = `https://viacep.com.br/ws/${cepDigits}/json/`;
   const data = await getJSON(url);
@@ -424,7 +395,6 @@ btnBuscarCep?.addEventListener("click", async () => {
   }
 });
 
-// ================= SALVAR ENDEREÇO NO BACKEND =================
 btnSalvarEndereco?.addEventListener("click", async () => {
   addrError.textContent = "";
 
@@ -463,7 +433,6 @@ btnSalvarEndereco?.addEventListener("click", async () => {
   }
 });
 
-// ================= LOGIN (POST /api/login-estabelecimento) =================
 btnBiz?.addEventListener("click", async () => {
   bizError.textContent = "";
 
@@ -493,7 +462,6 @@ btnBiz?.addEventListener("click", async () => {
     const nomeDaApi = extrairNomeEstab(data);
     if (nomeDaApi) salvarNomeEstabelecimento(nomeDaApi);
 
-    // ✅ se precisar cadastrar endereço, abre etapa 3 (robusto)
     if (precisaEndereco(data)) {
       abrirModoBizSignup(3);
       addrError.textContent = "Cadastre o endereço do estabelecimento para continuar.";
