@@ -6,18 +6,18 @@ from datetime import datetime, timezone
 _DB_LOCK = threading.Lock()
 
 def _now_iso() -> str:
-    # ISO 8601 em UTC (com 'Z')
+    
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 def _db_path() -> str:
-    # Permite sobrescrever via env, mas padrão é no mesmo diretório do main.py
+    
     return os.getenv("JSON_DB_FILE", "dados.json")
 
 def _default_db():
     return {
-        "filas": {},              # {fila_id: fila_dict}
-        "fila_clientes": {},      # {fila_id: [cliente_dict, ...]}
-        "fila_estado": {},        # {fila_id: {"atendendo_cliente_id": int|None}}
+        "filas": {},              
+        "fila_clientes": {},      
+        "fila_estado": {},       
         "next_cliente_id": 1
     }
 
@@ -36,7 +36,7 @@ def load_db():
             save_db(db)
             return db
 
-        # migra campos faltando
+        
         base = _default_db()
         for k,v in base.items():
             if k not in db:
