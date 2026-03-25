@@ -1,4 +1,3 @@
-// ===== Sidebar mobile (somente nesta página) =====
 const sidebar = document.getElementById("sidebar");
 const backdrop = document.getElementById("backdrop");
 const menuBtn = document.getElementById("menuBtn");
@@ -17,33 +16,27 @@ function closeSidebar(){
 menuBtn?.addEventListener("click", openSidebar);
 backdrop?.addEventListener("click", closeSidebar);
 
-// ===== API =====
 const API_BASE = window.location.origin;
 
-// ===== Toast =====
 function showToast(msg, type = "info"){
   window.showToastTop?.(type, msg, 2200);
 }
 
-// ===== Topbar nome =====
 function setNomeTopbar(nome){
   const el = document.getElementById("nomeEstabelecimento");
   if (el) el.textContent = (nome || "—").trim();
 }
 
-// ===== Inputs do formulário =====
 const inpNome = document.getElementById("inpNome");
 const inpEndereco = document.getElementById("inpEndereco");
 const inpTelefone = document.getElementById("inpTelefone");
 
-// ✅ garante bloqueio (mesmo se esquecer readonly no HTML)
 function bloquearCamposFixos(){
   if (inpNome) inpNome.readOnly = true;
   if (inpEndereco) inpEndereco.readOnly = true;
 }
 bloquearCamposFixos();
 
-// ===== Helpers =====
 async function getJSON(path){
   const res = await fetch(API_BASE + path, { cache: "no-store" });
   const data = await res.json().catch(() => ({}));
@@ -55,11 +48,9 @@ function digitsOnly(s){
   return String(s || "").replace(/\D+/g, "");
 }
 
-// ===== Telefone/WhatsApp: máscara BR (11 dígitos) =====
 function formatBRPhone(value){
   const d = digitsOnly(value).slice(0, 11);
 
-  // (00) 0000-0000
   if (d.length <= 10){
     const p1 = d.slice(0, 2);
     const p2 = d.slice(2, 6);
@@ -70,7 +61,6 @@ function formatBRPhone(value){
     return `(${p1}) ${p2}-${p3}`;
   }
 
-  // (00) 00000-0000
   const p1 = d.slice(0, 2);
   const p2 = d.slice(2, 7);
   const p3 = d.slice(7, 11);
@@ -80,14 +70,12 @@ function formatBRPhone(value){
 function bindPhoneMask(){
   if (!inpTelefone) return;
 
-  // aplica máscara ao digitar
   inpTelefone.addEventListener("input", () => {
     const old = inpTelefone.value;
     const masked = formatBRPhone(old);
     inpTelefone.value = masked;
   });
 
-  // ao colar, mascara também
   inpTelefone.addEventListener("paste", () => {
     setTimeout(() => {
       inpTelefone.value = formatBRPhone(inpTelefone.value);
@@ -100,7 +88,6 @@ function preencherPerfil(est){
   const nome = (est?.nome || "").trim();
   const telefone = (est?.telefone || "").trim();
 
-  // endereço: seu backend agora tem campos separados (logradouro/numero/bairro/cidade_end/uf)
   const endereco =
     (est?.endereco || "").trim() ||
     [
@@ -117,11 +104,9 @@ function preencherPerfil(est){
   if (inpEndereco) inpEndereco.value = endereco || inpEndereco.value || "";
 
   if (inpTelefone){
-    // máscara aplicada (aceita 10/11 dígitos)
     inpTelefone.value = formatBRPhone(telefone);
   }
 
-  // topbar + localStorage
   if (nome){
     setNomeTopbar(nome);
     localStorage.setItem("estabelecimento_nome", nome);
@@ -129,7 +114,6 @@ function preencherPerfil(est){
   }
 }
 
-// ===== Carregar perfil do banco =====
 async function carregarPerfil(){
   const estabId = Number(localStorage.getItem("estabelecimento_id") || 0);
   if (!estabId){
@@ -138,17 +122,13 @@ async function carregarPerfil(){
     return;
   }
 
-  // primeiro tenta o cache
   const nomeLS = (localStorage.getItem("estabelecimento_nome") || "").trim();
   if (nomeLS) setNomeTopbar(nomeLS);
 
-  // agora busca do banco
   const est = await getJSON(`/api/estabelecimentos/${estabId}`);
   preencherPerfil(est);
 }
 
-// ===== Form salvar =====
-// ✅ Agora só permite salvar TELEFONE (nome/endereço bloqueados)
 async function putJSON(path, body){
   const res = await fetch(API_BASE + path, {
     method: "PUT",
@@ -168,10 +148,8 @@ formPerfil?.addEventListener("submit", async (e) => {
     const estabId = Number(localStorage.getItem("estabelecimento_id") || 0);
     if (!estabId) throw new Error("Sessão inválida. Faça login novamente.");
 
-    // manda só dígitos
     const telDigits = digitsOnly(inpTelefone?.value || "");
 
-    // validação básica (opcional)
     if (telDigits && !(telDigits.length === 10 || telDigits.length === 11)){
       throw new Error("Telefone inválido. Use DDD + número (10 ou 11 dígitos).");
     }
@@ -180,7 +158,6 @@ formPerfil?.addEventListener("submit", async (e) => {
       telefone: telDigits || null
     });
 
-    // mantém máscara no input
     if (inpTelefone) inpTelefone.value = formatBRPhone(telDigits);
 
     showToast("Telefone atualizado!", "success");
@@ -190,7 +167,6 @@ formPerfil?.addEventListener("submit", async (e) => {
   }
 });
 
-// ===== Preferências (mock salvar local) =====
 const prefs = {
   notif: document.getElementById("togNotif"),
   live: document.getElementById("togLive"),
@@ -215,7 +191,6 @@ function savePrefs(){
 Object.values(prefs).forEach((el) => el?.addEventListener("change", savePrefs));
 loadPrefs();
 
-// ===== Sair =====
 document.getElementById("btnSair")?.addEventListener("click", () => {
   localStorage.removeItem("estabelecimento_id");
   localStorage.removeItem("estabelecimento_nome");
