@@ -136,7 +136,6 @@ body{
   font-size:14px;
 }
 
-/* posição */
 .pos{
   padding:10px 8px 4px;
 }
@@ -151,7 +150,6 @@ body{
   font-size:12px;
 }
 
-/* rows */
 .rows{
   display:flex;
   flex-direction:column;
@@ -169,7 +167,6 @@ body{
 .v.accent{color:var(--accent); font-weight:900}
 .v.danger{color:var(--danger); font-weight:800}
 
-/* pill */
 .pill{
   display:inline-flex;
   align-items:center;
@@ -192,7 +189,6 @@ body{
   color:#ffd0d0;
 }
 
-/* map mock */
 .map{
   margin-top:12px;
   height:64px;
@@ -237,7 +233,6 @@ body{
   border-radius:2px;
 }
 
-/* actions */
 .actions{
   margin-top:12px;
   display:flex;
@@ -312,18 +307,17 @@ body{
   touch-action: manipulation;
 }
 
-/* ===== Modo EM ATENDIMENTO ===== */
 
 .pos-num.em-atendimento{
-  font-size: clamp(18px, 4vw, 26px); /* responsivo */
+  font-size: clamp(18px, 4vw, 26px); 
   font-weight: 700;
   letter-spacing: .5px;
 
-  white-space: nowrap;     /* não quebra linha */
+  white-space: nowrap;     
   overflow: hidden;
-  text-overflow: ellipsis; /* corta se faltar espaço */
+  text-overflow: ellipsis; 
 
-  color: #ffffff; /* opcional — laranja suave */
+  color: #ffffff;
 }
 
 .pos-sub.em-atendimento{
@@ -334,7 +328,7 @@ body{
 #posicao {
   color: #fff !important;
 }
-/* ===== Modal final/cancel (cliente) ===== */
+
 .final-modal{
   position: fixed;
   inset: 0;
@@ -410,10 +404,6 @@ body{
   border-color: rgba(255,122,0,.55);
   box-shadow: 0 14px 30px rgba(255,122,0,.18);
 }
-/* =========================================================
-   ✅ LIGHT MODE — Fila Cliente
-   Cole NO FINAL do style_fila_cliente.css
-========================================================= */
 
 :root[data-theme="light"]{
   --bg:#f5f6f8;
@@ -425,7 +415,6 @@ body{
   --muted: rgba(18,19,24,.62);
 }
 
-/* Fundo (mantém o estilo, mas claro) */
 :root[data-theme="light"] body{
   background:
     radial-gradient(1200px 700px at 50% 0%, rgba(255,122,0,.10), transparent 60%),
@@ -434,22 +423,18 @@ body{
   color: var(--text);
 }
 
-/* Marca */
 :root[data-theme="light"] .brand-white{ color:#121318; }
 
-/* Botões de ícone */
 :root[data-theme="light"] .icon-btn{
   background: rgba(0,0,0,.03);
   border-color: rgba(0,0,0,.10);
   color: #121318;
 }
 
-/* Cards */
 :root[data-theme="light"] .card{
   box-shadow: 0 14px 34px rgba(0,0,0,.12);
 }
 
-/* Títulos e textos */
 :root[data-theme="light"] .card-title{
   color: rgba(18,19,24,.92);
 }
@@ -472,7 +457,6 @@ body{
   color: #d73737;
 }
 
-/* Pills */
 :root[data-theme="light"] .pill.ok{
   background: rgba(43,213,118,.12);
   border-color: rgba(43,213,118,.25);
@@ -484,7 +468,6 @@ body{
   color: #b32626;
 }
 
-/* Mapa fake */
 :root[data-theme="light"] .map{
   background: rgba(0,0,0,.03);
   border-color: rgba(0,0,0,.10);
@@ -493,7 +476,6 @@ body{
   background: rgba(0,0,0,.12);
 }
 
-/* Botões ação */
 :root[data-theme="light"] .btn{
   background: rgba(0,0,0,.03);
   border-color: rgba(0,0,0,.10);
@@ -509,30 +491,21 @@ body{
   color: #5a1515;
 }
 
-/* Toast */
 :root[data-theme="light"] .toast{
   background: rgba(0,0,0,.70);
 }
 
-/* =========================================================
-   PATCH — LIGHT com contraste + posição destacada
-   Cole NO FINAL do style_fila_cliente.css
-========================================================= */
-
 :root[data-theme="light"]{
   --bg:#f6f7f9;
 
-  /* cards mais “brancos” e com borda real */
   --panel: rgba(255,255,255,.96);
   --panel2: rgba(255,255,255,.92);
   --border: rgba(17,19,24,.12);
 
-  /* textos com mais contraste */
   --text:#121318;
   --muted: rgba(18,19,24,.70);
 }
 
-/* fundo menos lavado */
 :root[data-theme="light"] body{
   background:
     radial-gradient(1200px 700px at 50% 0%, rgba(255,122,0,.12), transparent 62%),
@@ -541,15 +514,12 @@ body{
   color: var(--text);
 }
 
-/* título/brand */
 :root[data-theme="light"] .brand-white{ color: #121318; }
 
-/* cards com sombra mais “real” */
 :root[data-theme="light"] .card{
   box-shadow: 0 12px 30px rgba(0,0,0,.10);
 }
 
-/* cabeçalhos dos cards */
 :root[data-theme="light"] .card-title{
   color: rgba(18,19,24,.92);
 }
@@ -558,42 +528,36 @@ body{
   border-color: rgba(255,122,0,.25);
 }
 
-/* textos */
 :root[data-theme="light"] .sub{ color: rgba(18,19,24,.70); }
 :root[data-theme="light"] .k{ color: rgba(18,19,24,.70); }
 :root[data-theme="light"] .v{ color: rgba(18,19,24,.92); }
 
-/* ✅ AQUI está o principal: posição visível e destacada */
 :root[data-theme="light"] .card.highlight{
   border-color: rgba(255,122,0,.35);
   background: linear-gradient(180deg, rgba(255,122,0,.10), rgba(255,255,255,.92));
 }
 
 :root[data-theme="light"] .pos-num{
-  color: #121318;           /* ou use var(--accent) se quiser laranja */
+  color: #121318; 
   text-shadow: 0 1px 0 rgba(255,255,255,.65);
 }
 
-/* ✅ SOBREPÕE o #posicao branco com !important */
 :root[data-theme="light"] #posicao{
-  color: #121318 !important;  /* se quiser laranja: var(--accent) */
+  color: #121318 !important; 
 }
 
-/* botões de ícone */
 :root[data-theme="light"] .icon-btn{
   background: rgba(0,0,0,.03);
   border-color: rgba(0,0,0,.12);
   color: #121318;
 }
 
-/* mapa */
 :root[data-theme="light"] .map{
   background: rgba(0,0,0,.03);
   border-color: rgba(0,0,0,.12);
 }
 :root[data-theme="light"] .map-line{ background: rgba(0,0,0,.14); }
 
-/* botões ações */
 :root[data-theme="light"] .btn{
   background: rgba(0,0,0,.03);
   border-color: rgba(0,0,0,.12);
@@ -603,19 +567,11 @@ body{
   color: rgba(18,19,24,.82);
 }
 
-/* pill fora do raio (melhor contraste) */
 :root[data-theme="light"] .pill.bad{
   background: rgba(255,77,77,.12);
   border-color: rgba(255,77,77,.25);
   color: #b32626;
 }
-
-/* ==========================================
-   FINAL MODAL (cliente) — FIX
-   ✅ overlay blur separado
-   ✅ card padronizado
-   ✅ sem retângulo fantasma
-========================================== */
 
 #finalModal{
   position: fixed !important;
@@ -626,7 +582,6 @@ body{
 }
 #finalModal.show{ display:block !important; }
 
-/* overlay (cobre tela inteira) */
 #finalModal .final-overlay,
 #finalModal .finalOverlay,
 #finalModal .finishOverlay{
@@ -636,12 +591,11 @@ body{
   backdrop-filter: blur(6px) !important;
 }
 
-/* animações */
 @keyframes finalModalIn{
   from{ opacity:0; transform: translateY(10px) scale(.96); }
   to{ opacity:1; transform: translateY(0) scale(1); }
 }
-/* animações */
+
 @keyframes finalFloat {
   0%   { transform: translate(-50%, -50%) translateY(0); }
   33%  { transform: translate(-50%, -50%) translateY(-6px); }
@@ -654,7 +608,6 @@ body{
   100% { background-position: 300% 50%; }
 }
 
-/* CARD */
 #finalModal .final-card,
 #finalModal .finalCard,
 #finalModal .finishCard {
@@ -690,7 +643,6 @@ body{
   z-index: 5 !important;
 }
 
-/* borda fixa */
 #finalModal .final-card::before,
 #finalModal .finalCard::before,
 #finalModal .finishCard::before,
@@ -717,7 +669,6 @@ body{
   mask-composite: exclude !important;
 }
 
-/* trail passando */
 #finalModal .final-card::after,
 #finalModal .finalCard::after,
 #finalModal .finishCard::after {
@@ -753,7 +704,6 @@ body{
   mask-composite: exclude;
 }
 
-/* ids do conteúdo */
 #finalTitle{ font-weight: 900 !important; }
 #finalSub{ color: rgba(233,233,234,.72) !important; line-height: 1.35 !important; }
 #finalPill{
@@ -765,7 +715,6 @@ body{
   font-weight:900 !important;
 }
 
-/* botão sair (se o JS usar classe/ID) */
 #finalModal button{
   border-radius: 14px !important;
   border: 1px solid rgba(255,122,0,.55) !important;
