@@ -1,4 +1,3 @@
-// /static/js/app_estab_notifications.js
 (() => {
   if (window.__estabNotificationsStarted) return;
   window.__estabNotificationsStarted = true;
