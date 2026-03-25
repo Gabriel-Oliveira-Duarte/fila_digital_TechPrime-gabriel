@@ -1,4 +1,3 @@
-// /static/js/app_toasts.js
 (() => {
   if (window.__appToastsLoaded) return;
   window.__appToastsLoaded = true;
