@@ -9,7 +9,6 @@
   --accent2:#ff8f2a;
   --success:#2bd576;
 
-  /* ✅ cores dos status (fixo dark/light) */
   --open:#22c55e;
   --closed:#facc15;
 }
@@ -25,10 +24,8 @@ body{
   color:var(--text);
 }
 
-/* Layout */
 .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
 
-/* Sidebar */
 .sidebar{
   background:linear-gradient(180deg, #0e0f12 0%, #0a0b0d 100%);
   border-right:1px solid var(--border);
@@ -80,10 +77,8 @@ body{
   text-align:center;
 }
 
-/* Content */
 .content{display:flex;flex-direction:column;min-width:0}
 
-/* Topbar */
 .topbar{
   height:64px;display:flex;align-items:center;justify-content:space-between;
   padding:0 22px;
@@ -106,7 +101,6 @@ body{
 
 .top-actions{display:flex;align-items:center;gap:10px}
 
-/* botões topo */
 .icon-btn{
   width:42px;height:42px;border-radius:14px;
   border:1px solid rgba(255,255,255,.08);
@@ -126,16 +120,13 @@ body{
 
 .mobile-top{display:none;align-items:center;gap:10px}
 
-/* Backdrop */
 .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:none}
 .backdrop.show{display:block}
 
-/* Page */
 .page{padding:22px;max-width:1280px;width:100%}
 h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 .subtitle{color:var(--muted2);margin:0 0 18px;font-size:14px}
 
-/* Grid */
 .grid{
   display:grid;
   grid-template-columns: 1fr 1fr;
@@ -143,7 +134,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   align-items:start;
 }
 
-/* Panel */
 .panel{
   border-radius:16px;
   background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
@@ -170,7 +160,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color:#ffd2a7;
 }
 
-/* Left list */
 .queue-list{display:flex;flex-direction:column;gap:10px}
 .queue-card{
   border-radius:14px;
@@ -187,7 +176,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 .queue-title{font-weight:900;font-size:13px;margin-bottom:6px}
 .queue-sub{font-size:12px;color:rgba(255,255,255,.60)}
 
-/* badge base (se não tiver status) */
 .badge{
   align-self:flex-start;
   display:inline-flex;
@@ -208,24 +196,15 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   background:rgba(255,255,255,.03);
 }
 
-/* ✅ NÃO deixe inactive “matar” cores do badge */
 .queue-card.inactive .badge{
   border-color:rgba(255,255,255,.12);
   background:rgba(255,255,255,.04);
   color:rgba(255,255,255,.65);
 }
-
-/* ==========================
-   ✅ STATUS (somente ABERTA / FECHADA)
-   funciona em DARK e LIGHT
-========================== */
-
-/* texto do status */
 .status-label{font-weight:700}
 .status-aberta{color:var(--open) !important}
 .status-fechada{color:var(--closed) !important}
 
-/* badge verde/amarelo */
 .badge.badge-aberta{
   background: rgba(34,197,94,.12) !important;
   border: 1px solid rgba(34,197,94,.35) !important;
@@ -237,7 +216,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: var(--closed) !important;
 }
 
-/* ✅ mesmo quando o card estiver inactive */
 .queue-card.inactive .badge.badge-aberta{
   background: rgba(34,197,94,.12) !important;
   border: 1px solid rgba(34,197,94,.35) !important;
@@ -249,7 +227,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: var(--closed) !important;
 }
 
-/* QR */
 .qr-wrap{display:flex;justify-content:center;padding:10px 0 6px}
 .qr-box{
   width:260px;height:260px;border-radius:16px;
@@ -259,7 +236,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 }
 .qr-box canvas,.qr-box img{width:100% !important;height:100% !important}
 
-/* Link */
 .link-box{
   margin-top:10px;padding:12px;border-radius:14px;
   border:1px solid rgba(255,255,255,.08);
@@ -286,7 +262,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 }
 .open-btn:hover{background:rgba(255,255,255,.05);transform:translateY(-1px)}
 
-/* Buttons */
 .btns{
   display:grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -311,7 +286,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 }
 .btn-primary:hover{background:var(--accent2)}
 
-/* Responsive */
 @media (max-width: 1100px){
   .grid{grid-template-columns:1fr}
   .panel{min-height:auto}
@@ -337,9 +311,7 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   .qr-box{width:230px;height:230px}
 }
 
-/* ===========================
-   ✅ TEMA CLARO
-=========================== */
+
 
 :root[data-theme="light"]{
   --bg:#f6f7fb;
@@ -353,7 +325,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   --success:#2bd576;
 }
 
-/* body light */
 :root[data-theme="light"] body{
   background:
     radial-gradient(1200px 700px at 30% 0%, rgba(255,122,0,.10), transparent 55%),
@@ -362,7 +333,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: var(--text) !important;
 }
 
-/* Sidebar/topbar */
 :root[data-theme="light"] .sidebar{
   background: linear-gradient(180deg, #ffffff 0%, #f3f5fb 100%) !important;
   border-right: 1px solid var(--border) !important;
@@ -385,7 +355,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
 :root[data-theme="light"] .estab{ color: rgba(18,19,24,.78) !important; }
 :root[data-theme="light"] .estab b{ color: var(--text) !important; }
 
-/* botões topo */
 :root[data-theme="light"] .icon-btn{
   border-color: rgba(0,0,0,.10) !important;
   background: rgba(0,0,0,.03) !important;
@@ -396,7 +365,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   border-color: rgba(0,0,0,.14) !important;
 }
 
-/* Painéis */
 :root[data-theme="light"] .panel{
   background: #ffffff !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -404,12 +372,10 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: var(--text) !important;
 }
 
-/* ✅ CRÍTICO: NÃO use ".panel * { color: ... !important }"
-   isso quebra as cores do status/badge */
+
 :root[data-theme="light"] .panel-head h3{ color: rgba(18,19,24,.85) !important; }
 :root[data-theme="light"] .subtitle{ color: var(--muted2) !important; }
 
-/* lista esquerda */
 :root[data-theme="light"] .queue-card{
   border-color: rgba(255,122,0,.22) !important;
   background: rgba(255,122,0,.10) !important;
@@ -420,7 +386,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   background: rgba(0,0,0,.03) !important;
 }
 
-/* link box */
 :root[data-theme="light"] .link-box{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -433,7 +398,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: rgba(18,19,24,.90) !important;
 }
 
-/* botões */
 :root[data-theme="light"] .btn{
   background: rgba(0,0,0,.03) !important;
   border-color: rgba(0,0,0,.10) !important;
@@ -446,14 +410,12 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: #0b0c0e !important;
 }
 
-/* toast */
 :root[data-theme="light"] .toast{
   background: rgba(0,0,0,.78) !important;
   border-color: rgba(255,255,255,.12) !important;
   color: #fff !important;
 }
 
-/* ===== Logo da Sidebar ===== */
 .avatar.avatar-logo{
   background: transparent !important;
   border: none !important;
@@ -468,36 +430,28 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   object-fit: contain;
   display:block;
 }
-/* =========================================================
-   PATCH — BADGE IGUAL AO "FILA AO VIVO"
-   (cole NO FINAL do style_qr_code.css)
-========================================================= */
 
-/* cores tipo "Fila ao Vivo" */
 :root{
-  --fv-open: #22c55e;     /* verde */
-  --fv-closed: #f59e0b;   /* dourado/laranja */
+  --fv-open: #22c55e;     
+  --fv-closed: #f59e0b;   
   --fv-open-bg: rgba(34,197,94,.14);
   --fv-open-bd: rgba(34,197,94,.35);
   --fv-closed-bg: rgba(245,158,11,.14);
   --fv-closed-bd: rgba(245,158,11,.40);
 }
 
-/* BADGE ABERTA */
 .queue-card .badge.badge-aberta{
   background: var(--fv-open-bg) !important;
   border: 1px solid var(--fv-open-bd) !important;
   color: var(--fv-open) !important;
 }
 
-/* BADGE FECHADA */
 .queue-card .badge.badge-fechada{
   background: var(--fv-closed-bg) !important;
   border: 1px solid var(--fv-closed-bd) !important;
   color: var(--fv-closed) !important;
 }
 
-/* NÃO deixa "inactive" apagar cor */
 .queue-card.inactive .badge.badge-aberta{
   background: var(--fv-open-bg) !important;
   border: 1px solid var(--fv-open-bd) !important;
@@ -509,7 +463,6 @@ h1{margin:8px 0 4px;font-size:34px;letter-spacing:-.6px}
   color: var(--fv-closed) !important;
 }
 
-/* garante que no LIGHT também não perde (por causa de regras fortes do tema) */
 :root[data-theme="light"] .queue-card .badge.badge-aberta,
 :root[data-theme="light"] .queue-card .badge.badge-fechada,
 :root[data-theme="light"] .queue-card.inactive .badge.badge-aberta,
