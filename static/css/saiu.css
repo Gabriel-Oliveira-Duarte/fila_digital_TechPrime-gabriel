@@ -1,8 +1,5 @@
-/* =========================================================
-   style_saiu.css — PADRÃO LOGIN (dark + glow laranja controlado)
-========================================================= */
 
-/* ===== Reset básico ===== */
+
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
 
@@ -13,11 +10,9 @@ html,body{ height:100%; }
   --muted:rgba(233,233,234,.72);
   --muted2:rgba(233,233,234,.55);
 
-  /* laranja do sistema (mais “chamativo”, tipo o login) */
-  --accent:#ff6600;         /* <- ajuste fino do tom */
+  --accent:#ff6600;         
   --accent2:#ff8f2a;
 
-  /* card */
   --card-top: rgba(255,255,255,.06);
   --card-bot: rgba(255,255,255,.03);
   --stroke: rgba(255,122,0,.22);
@@ -36,7 +31,6 @@ body{
   overflow-x:hidden;
 }
 
-/* Safe-area (iPhone notch) */
 @supports (padding: env(safe-area-inset-top)) {
   body{
     padding-top: env(safe-area-inset-top);
@@ -44,20 +38,17 @@ body{
   }
 }
 
-/* ===== Fundo (mais preto + glow laranja do mesmo tom do botão, bem suave) ===== */
 .bg{
   position:fixed;
   inset:0;
   z-index:0;
   pointer-events:none;
 
-  /* bem parecido com o login: preto dominando e laranja só “respirando” */
   background:
     radial-gradient(900px 600px at 50% 35%, rgba(255,115,0,.12), transparent 62%),
     radial-gradient(1200px 800px at 50% 55%, rgba(0,0,0,.25), rgba(0,0,0,.92));
 }
 
-/* ===== Layout ===== */
 .wrap{
   position:relative;
   z-index:1;
@@ -67,7 +58,6 @@ body{
   padding: 28px 16px;
 }
 
-/* ===== Card (igual vibe do login) ===== */
 .card{
   width: min(520px, 92vw);
   border-radius: var(--radius);
@@ -84,7 +74,6 @@ body{
   overflow:hidden;
 }
 
-/* ===== Marca ===== */
 .brand{
   font-weight: 900;
   letter-spacing: .6px;
@@ -95,7 +84,6 @@ body{
 .brand .b1{ color: var(--accent); }
 .brand .b2{ color: #FFFFFF8C; margin-left: 2px; }
 
-/* ===== Textos ===== */
 .title{
   margin: 10px 0 10px 0;
   font-size: clamp(22px, 4.8vw, 34px);
@@ -110,7 +98,6 @@ body{
   font-size: clamp(14px, 3.5vw, 16px);
 }
 
-/* Tip igual sensação do login (cartão interno mais “cinza”, sem laranja forte) */
 .tip{
   margin: 12px auto 6px auto;
   padding: 12px 14px;
@@ -142,12 +129,7 @@ body{
   letter-spacing: .4px;
 }
 
-/* ================================
-   EFEITO DO LOGIN: FLOAT + BORDA FLOW
-   (aplicado no modal do "saiu")
-================================ */
 
-/* float (movimento do modal) */
 @keyframes floatModal{
   0% { transform: translateY(0); }
   33%{ transform: translateY(-6px); }
@@ -155,14 +137,12 @@ body{
   100%{ transform: translateY(0); }
 }
 
-/* aplica o float no modal */
 .card{
   animation: floatModal 7.5s cubic-bezier(.4,0,.2,1) infinite;
   position: relative;
   z-index: 1;
 }
 
-/* borda premium animada (igual ao login) */
 .card::after{
   content: "";
   position: absolute;
@@ -192,28 +172,23 @@ body{
   pointer-events: none;
 }
 
-/* ===== BORDA LARANJA ANIMADA (igual login) ===== */
 .card{
   position: relative;
   z-index: 1;
 }
 
-/* ==============================
-   BORDA ANIMADA + GLOW (igual login)
-   ============================== */
+
 .card{
   position: relative;
   overflow: hidden;
-  isolation: isolate; /* MUITO importante: trava a pilha de z-index */
+  isolation: isolate; 
 }
 
-/* conteúdo sempre acima */
 .card > *{
   position: relative;
   z-index: 5;
 }
 
-/* glow interno (fica atrás do conteúdo e atrás da borda) */
 .card::after{
   content:"";
   position:absolute;
@@ -223,7 +198,6 @@ body{
   z-index: 2;
 }
 
-/* BORDA LARANJA “PASSANDO” */
 .card::before{
   content:"";
   position:absolute;
@@ -240,7 +214,6 @@ body{
     transparent 60%
   );
 
-  /* recorta o centro e deixa só a “borda” */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -251,7 +224,7 @@ body{
   animation: borderFlow 18s linear infinite;
 
   pointer-events:none;
-  z-index: 4; /* acima do glow */
+  z-index: 4; 
 }
 
 @keyframes borderFlow{
@@ -259,18 +232,13 @@ body{
   100% { background-position: 300% 50%; }
 }
 
-/* ==========================================
-   BORDA PREMIUM — IDÊNTICA AO LOGIN
-   ========================================== */
-
-/* ⚠️ MUITO IMPORTANTE: NÃO cortar a borda */
+/
 .card{
   position: relative;
   z-index: 1;
-  overflow: visible !important; /* ← isso resolve */
+  overflow: visible !important; 
 }
 
-/* Borda animada passando */
 .card::before{
   content: "";
   position: absolute;
@@ -294,7 +262,6 @@ body{
   pointer-events: none;
   z-index: 3;
 
-  /* RECORTE — deixa só a borda */
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -303,7 +270,6 @@ body{
   mask-composite: exclude;
 }
 
-/* animação da borda */
 @keyframes borderFlow{
   0%   { background-position:   0% 50%; }
   100% { background-position: 300% 50%; }
