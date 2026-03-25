@@ -1,8 +1,5 @@
 const API_BASE = window.location.origin;
 
-// ===============================
-// ESTABELECIMENTO
-// ===============================
 (function syncNomeEstab() {
   const ja = localStorage.getItem("nomeEstabelecimento");
   if (ja && ja.trim()) return;
@@ -40,9 +37,6 @@ function getEstabId() {
   return id > 0 ? id : 0;
 }
 
-// ===============================
-// SIDEBAR MOBILE
-// ===============================
 function setupSidebar() {
   const sidebar = document.getElementById("sidebar");
   const backdrop = document.getElementById("backdrop");
@@ -62,9 +56,6 @@ function setupSidebar() {
   backdrop?.addEventListener("click", closeSidebar);
 }
 
-// ===============================
-// RANGE DO RAIO
-// ===============================
 function setupRange() {
   const range = document.getElementById("rangeMeters");
   const value = document.getElementById("rangeValue");
@@ -80,14 +71,11 @@ function setupRange() {
 
     value.textContent = `${current}m`;
 
-    // move o número junto com a bolinha
     value.style.left = `${percent}%`;
-
-    // evita cortar nas bordas
+  
     value.classList.toggle("is-min", percent <= 2);
     value.classList.toggle("is-max", percent >= 98);
 
-    // pinta a barra até a bolinha
     range.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${percent}%, rgba(255,255,255,.14) ${percent}%, rgba(255,255,255,.14) 100%)`;
   }
 
@@ -98,7 +86,6 @@ function setupRange() {
   atualizar();
 }
 
-//MODAL//
 function criarModalSucesso() {
   if (document.getElementById("modalSucessoFila")) return;
 
@@ -160,9 +147,7 @@ function mostrarModalSucessoERedirecionar(urlDestino) {
     window.location.href = urlDestino;
   }, 1500);
 }
-// ===============================
-// CRIAR FILA
-// ===============================
+
 async function criarFila() {
   const estabId = getEstabId();
 
@@ -197,7 +182,6 @@ async function criarFila() {
     tempo_medio_min: tempoMedio,
     status: toggleAtiva ? "ABERTA" : "FECHADA",
 
-    // campos extras
     mensagem_boas_vindas: msgBoasVindas,
     horario_funcionamento: horario,
     observacoes: observacoes
@@ -229,10 +213,8 @@ async function criarFila() {
       throw new Error("A fila foi criada, mas o id da fila não foi retornado.");
     }
 
-    // salva a última fila criada, caso queira usar depois
     localStorage.setItem("ultima_fila_criada_id", String(filaId));
 
-    // ✅ mostra modal e depois redireciona
     mostrarModalSucessoERedirecionar(`/templates/Qr_code.html?filaId=${filaId}`);
     return;
   } catch (err) {
@@ -246,9 +228,6 @@ async function criarFila() {
   }
 }
 
-// ===============================
-// INIT
-// ===============================
 document.addEventListener("DOMContentLoaded", () => {
   preencherNomeTopo();
   setupSidebar();
