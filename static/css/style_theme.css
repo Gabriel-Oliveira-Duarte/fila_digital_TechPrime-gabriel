@@ -1,10 +1,8 @@
 /* /static/css/theme_base.css
-   Base mínima para DARK/LIGHT com boa legibilidade
 */
 
 :root{
-  /* dark default */
-  --bg:#0b0c0e;
+=  --bg:#0b0c0e;
   --surface:#121218;
   --card:rgba(255,255,255,.06);
   --stroke:rgba(255,255,255,.12);
@@ -31,37 +29,32 @@
   color-scheme: light;
 }
 
-/* Base de leitura */
-html, body{
+=html, body{
   background: var(--bg);
   color: var(--text);
 }
 
-/* Se seu layout usa containers/painéis */
-.panel, .card, .modal, .confirm-card, .finishCard, .call-box{
+=.panel, .card, .modal, .confirm-card, .finishCard, .call-box{
   color: var(--text);
 }
 
-/* Textos “apagados” no claro (evita branco quase invisível) */
-.muted, .subtitle, .panel-sub, .mini-label{
+=.muted, .subtitle, .panel-sub, .mini-label{
   color: var(--muted) !important;
 }
 
-/* Inputs/selects legíveis em ambos */
-input, select, textarea{
+=input, select, textarea{
   color: var(--text);
 }
 
-/* Caso seus botões/ícones usem opacity baixa no claro */
+
 :root[data-theme="light"] .icon-btn i{
   color: var(--text);
   opacity: .9;
 }
 
-/* ===== Toast stack (top-right, abaixo da topbar) ===== */
 .toast-stack{
   position: fixed;
-  top: 74px;          /* 64px da topbar + margem */
+  top: 74px;          
   right: 18px;
   z-index: 9999;
   display: flex;
