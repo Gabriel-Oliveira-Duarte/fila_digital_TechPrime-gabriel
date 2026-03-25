@@ -5,24 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Criar Fila - Painel</title>
 
-  <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-  <!-- Base tema -->
   <link rel="stylesheet" href="/static/css/style_theme.css">
 
-  <!-- CSS exclusivo -->
 <link rel="stylesheet" href="/static/css/style_criar_fila.css?v=20260304_7">
 </head>
 
 <body>
   <div class="app">
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="avatar avatar-logo">
@@ -48,10 +43,8 @@
       <div class="sidebar-footer">© 2026 ANDA LOGO</div>
     </aside>
 
-    <!-- BACKDROP (mobile) -->
     <div class="backdrop" id="backdrop"></div>
 
-    <!-- CONTENT -->
     <main class="content">
       <header class="topbar">
         <div class="mobile-top">
@@ -80,7 +73,6 @@
         <div class="grid-create">
           <div class="stack">
 
-            <!-- Informações básicas -->
             <div class="panel">
               <div class="panel-head">
                 <h3>Informações básicas</h3>
@@ -99,12 +91,10 @@
                     </div>
 
                     <div class="range-wrap">
-                      <!-- ✅ tooltip flutuante -->
                       <span class="range-floating" id="rangeValue">500m</span>
 
                       <input id="rangeMeters" class="range" type="range" min="100" max="2000" value="500" step="10">
 
-                      <!-- ✅ escala sem “500m fixo” -->
                       <div class="range-scale">
                         <span>100m</span>
                         <span>2000m</span>
@@ -128,7 +118,6 @@
               </div>
             </div>
 
-            <!-- Informações extras -->
             <div class="panel">
               <div class="panel-head">
                 <h3>Informações extras (opcional)</h3>
